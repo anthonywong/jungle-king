@@ -1,0 +1,8 @@
+JUNGLE KING — REPOSITORY PREPARATION
+
+Run python3 tools/check.py in the source repository for current local results.
+This naming/checkpoint pass does not claim new WebGL, Rapier, Safari, mobile-device,
+or audio playback validation. Historical reports are in source docs/.
+Both branches retain the same rule and AI code and preserve approved media bytes.
+The 3D engine dependencies remain external and were not upgraded.
+GitHub publication is a separate, explicit operation, not performed by build.py.

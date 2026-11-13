@@ -1,0 +1,42 @@
+HISTORICAL REPORT — imported unchanged test scope, not rerun-browser evidence.
+
+山河獸影 — 撼嶽篇 6.0: validation scope
+
+179 automated checks passed:
+53 rules/AI checks              tests/rules-v6.log
+20 painted-sequence checks     tests/timeline-v6-results.txt
+60 game/browser regression     tests/browser-v6.log
+46 elephant/audio checks       tests/elephant-browser.log
+
+Reports:
+  tests/painted-browser-results.json
+  tests/elephant-browser-results.json
+  tests/audio-signal-results.json
+
+Coverage includes legal moves and capture exceptions; AI choices; lion and
+elephant frame schedules; elephant/tiger and alternate target selection;
+playable encounter, capture completion, skip applying once, AI reply, undo,
+return to the original match; preview pause/scrub/speed; audio loading, eight
+call assets, sample-aligned stem playback, battle mix and ducking, independent
+mute/faders and audition controls; reduced motion; simulated mobile controls;
+no uncaught browser errors and no external runtime requests.
+The final audio was rerendered with corrected shakuhachi and koto instrument
+mapping, reembedded, and the 46 elephant/audio checks rerun successfully.
+
+An OfflineAudioContext render of the actual game mix was finite and non-silent,
+with zero samples at digital clipping. Detailed metrics are in the JSON report.
+This signal check does not establish subjective musical or recording realism.
+
+Browser boundary: isolated Chromium, desktop and a simulated 390 x 844 touch
+viewport. The built HTML bytes were loaded with set_content; a controlled
+localStorage substitute was used. Native file:// navigation was blocked by the
+test environment and was not bypassed. Actual file-origin persistence, Safari,
+Firefox, physical phones/tablets and hardware-speaker output remain unverified.
+Audio autoplay restrictions still require a user gesture on real browsers.
+
+Art boundary: thirteen elephant poses; sixteen unchanged lion frames; original
+brush artwork retained. The six other attackers remain panel-based. This is a
+painted frame sequence, not a skeletal model or realistic wildlife simulation.
+The excluded elephant source poses with inaccurate mouth anatomy are not used.
+
+No live deployment or Library overwrite was performed for this edition.

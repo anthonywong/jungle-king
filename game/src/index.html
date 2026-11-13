@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><meta name="application-name" content="Jungle King">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1b2723">
+<meta name="description" content="山河獸影：寫實漫畫風鬥獸棋。立體山水棋盤、八獸對弈、漫畫戰鬥過場，可離線與電腦對戰。">
+<title>Jungle King | 山河獸影 · 撼嶽篇｜鬥獸棋</title>
+<style>/*__CSS__*/</style>
+
+</head>
+<body>
+<div id="app">
+<header class="topbar">
+ <div class="brand"><span class="brand-mark">獸</span><div><b>鬥獸棋</b><small>山 河 獸 影</small></div><span class="version">撼嶽篇 / 六</span></div>
+ <div id="turnIndicator" class="turn-indicator" role="status"><i></i><span>靜候開局</span></div>
+ <nav class="top-actions" aria-label="遊戲設定"><button id="soundBtn" class="icon-btn" aria-pressed="true">音效 <b>開</b></button><button id="musicBtn" class="icon-btn" title="踏嶽行軍・弦樂、撥弦、低銅管與戰鼓" aria-pressed="true">音樂 <b>開</b></button><button id="audioBtn" class="icon-btn" title="音樂與音效音量">音量</button><button id="helpBtn" class="icon-btn">棋規 <span>?</span></button><button id="fullBtn" class="icon-btn fullscreen" title="全螢幕">⛶</button></nav>
+</header>
+<main class="game-layout">
+ <section id="arena" class="arena" aria-label="立體山水鬥獸棋棋盤">
+  <canvas id="scene" tabindex="0" aria-label="點選我方動物，再點落點。拖曳旋轉棋盤，滾輪縮放；亦可使用方向鍵與 Enter。"></canvas>
+  <div class="battlefield-title"><span class="eyebrow">山 河 一 局</span><h2>雙河爭鋒</h2><p>越澗 · 設伏 · 奪穴</p></div>
+  <div class="field-seal" aria-hidden="true">山<br>河</div>
+  <div class="side-status enemy"><span class="side-dot"></span><b>紅方・電腦</b><div id="enemyRoster" class="roster"></div><em id="enemyCount">08 / 08</em></div>
+  <div id="pieceLabels" class="piece-labels" aria-hidden="true"></div><div id="boardCoords" class="board-coords" aria-hidden="true"></div>
+  <div id="floatingMessage" class="floating-message" role="status" aria-live="polite"></div>
+  <div id="scenarioBanner" class="scenario-banner hidden"><div><b id="scenarioTitle">獅豹對決</b><span id="scenarioInstruction">點選藍獅，再點紅豹，體驗逐格演出。</span></div><button id="exitScenario" class="small-btn">返回原局</button></div>
+  <div id="trainingBanner" class="training-banner hidden"><div><span class="eyebrow">棋藝演練</span><b id="trainingTitle"></b><p id="trainingDesc"></p></div><button id="exitTraining" class="small-btn">離開演練</button></div>
+  <div class="side-status player"><span class="side-dot"></span><b>藍方・你</b><div id="playerRoster" class="roster"></div><em id="playerCount">08 / 08</em></div>
+  <div class="camera-controls"><span>觀局</span><button id="rotateLeft" title="向左旋轉">↶</button><button id="viewBtn" title="切換俯視">俯視</button><button id="rotateRight" title="向右旋轉">↷</button><button id="resetCamera" title="重設視角">重設</button></div>
+  <div class="arena-caption"><span><i class="legend-dot"></i> 可落子</span><span><i class="legend-dot capture"></i> 可吃子</span><span class="drag-hint">拖曳觀局 · 滾輪縮放</span></div>
+ </section>
+ <aside class="command-panel">
+  <div class="panel-heading"><span class="eyebrow">八獸圖譜</span><span id="roundLabel">回合 01</span></div>
+  <section id="unitCard" class="unit-card"><div class="unit-visual"><span id="unitCode" class="unit-code">八獸待命</span><div id="unitPortrait"></div><span id="unitRank" class="unit-rank">七</span></div><div class="unit-info"><span id="unitClass" class="eyebrow">點選我方動物</span><h2 id="unitName">八獸待命</h2><div id="rankBars" class="rank-bars"></div><p id="unitDesc">點選藍方動物，落點將顯示在棋盤上。</p></div></section>
+  <div id="tacticalStatus" class="tactical-status"><span class="eyebrow">局中有勢</span><p>獅虎越澗，靈鼠渡河。獸穴周圍的陷阱，能逆轉強弱。</p></div>
+  <div class="action-row"><button id="hintBtn" class="action-btn">觀勢 <span>提示</span></button><button id="undoBtn" class="action-btn">↶ <span>悔棋</span></button></div>
+  <div class="settings-row"><label for="difficulty">對手棋力</label><select id="difficulty"><option value="easy">初試 · 入門</option><option value="normal" selected>對弈 · 標準</option><option value="hard">高手 · 挑戰</option></select></div>
+  <label class="toggle-row" for="cinematic"><span>漫畫戰鬥過場</span><input id="cinematic" type="checkbox" checked><span class="switch"></span></label>
+  <label class="toggle-row" for="reduced"><span>減少動態與震動</span><input id="reduced" type="checkbox"><span class="switch"></span></label>
+  <div class="demo-row"><label for="demoAnimal">過場試映</label><select id="demoAnimal" aria-label="選擇演示動物"><option value="7">獅・猛獅撲擊</option><option value="6">虎・猛虎躍澗</option><option value="5">豹・豹影閃擊</option><option value="4">狼・蒼狼追獵</option><option value="3">狗・獵犬突襲</option><option value="2">貓・靈貓疾撲</option><option value="1">鼠・靈鼠穿陣</option><option value="8">象・巨象撼地</option></select><button id="demoBtn" class="small-btn">觀看</button></div>
+  <section class="battle-log"><div class="log-title"><span class="eyebrow">對弈紀錄</span><span id="aiStats">本機運算・無需連線</span></div><ol id="log"><li class="log-empty">一局山河，從此落子。</li></ol></section>
+  <div class="secondary-actions"><button id="elephantScenarioBtn" class="small-btn">巨象撼虎</button><button id="scenarioBtn" class="small-btn">獅豹對決</button><button id="trainingBtn" class="small-btn">互動棋藝演練</button><button id="newBtn" class="small-btn">重開一局</button></div>
+  <div class="panel-footer"><span>原畫逐格・山河對弈</span><span>撼嶽版 6.0</span></div>
+ </aside>
+</main>
+<div id="intro" class="intro-overlay">
+ <div class="intro-window painted-intro">
+  <div class="cover-painting" id="coverPainting" aria-hidden="true"></div>
+  <div class="cover-wash" aria-hidden="true"></div>
+  <div class="cover-inscription" aria-hidden="true"><span>獅踞山河</span><small>一撲定乾坤</small></div>
+  <div class="intro-copy">
+   <div class="eyebrow"><span class="seal-mini">弈</span> 鬥獸棋・畫卷篇</div>
+   <p class="intro-kicker">山有其勢，獸有其魂。</p>
+   <h1>山河<span>獸影</span></h1>
+   <div class="intro-rule"></div>
+   <h2>獅動風生。象踏山河。</h2>
+   <p class="intro-desc">八獸越澗，強弱相制。<br>在山水畫卷中，與電腦對弈。</p>
+   <button id="startBtn" class="primary-btn">入局對弈 <span>→</span></button>
+   <button id="elephantIntro" class="scenario-launch elephant-launch">試玩巨象撼虎 <span>新・逐格原畫</span></button>
+   <button id="scenarioIntro" class="scenario-launch">試玩獅豹對決 <span>原畫逐格演出</span></button>
+   <button id="resumeBtn" class="resume-btn hidden">續上局 →</button>
+   <div class="intro-bottom"><button id="introElephantDemo">先看巨象演出</button><span>／</span><button id="introDemo">獅王演出</button><span>／</span><button id="introTraining">學習棋規</button></div>
+   <p class="edition-note">立體棋盤 · 本機 AI · 無需連線</p>
+  </div>
+  <div class="intro-footnote">點擊後開啟配樂與音效 · 可獨立調整音量</div>
+ </div>
+</div>
+<div id="battleUI" class="battle-ui hidden" aria-live="polite">
+ <div class="cinema-bar top"><span>獸 影・交 鋒</span><span id="battleWho"></span><span id="filmKind" class="film-kind"></span><div class="film-controls"><button id="pauseBattle" aria-pressed="false" title="暫停演出">暫停</button><button id="speedBattle" title="切換播放速度">1×</button><button id="skipBattle">跳過 / SPACE</button></div></div>
+ <div id="battleCutin" class="battle-cutin"><div id="battlePortrait"></div><div class="cutin-copy"><span id="battleUnitCode" class="eyebrow"></span><b id="battleQuote"></b></div></div>
+ <div class="battle-target"><span>交鋒之敵</span><b id="targetName"></b><small>吃子演出・不另計傷害</small></div>
+ <div id="attackTitle" class="attack-title"><small>勢 如 破 竹</small><h2 id="attackName"></h2></div>
+ <div id="impactWord" class="impact-word" role="img" aria-label="破・擊破敵獸"><img id="brushImpact" alt="" draggable="false"><span>一 擊 ・ 破 陣</span></div><div id="impactFlash" class="impact-flash"></div><div class="speed-lines"></div>
+ <div class="cinema-bar bottom"><span>山 河 獸 影</span><div class="energy-meter"><i></i></div><label class="film-seek-label"><span class="sr-only">演出進度</span><input id="filmSeek" type="range" min="0" max="1000" value="0" aria-label="演出進度"></label><span id="combatTime">蓄勢 · 進擊</span></div>
+</div>
+<dialog id="helpDialog" class="modal help-modal"><div class="modal-header"><div><span class="eyebrow">入局須知</span><h2>棋規與操作</h2></div><button class="close-dialog" data-close="helpDialog" aria-label="關閉">×</button></div>
+ <div class="rules-goal"><b>奪穴，即勝。</b><p>任何一隻動物進入敵方獸穴，立即獲勝。吃掉所有敵子，或令對方無合法走法，也會獲勝。</p></div><div class="rank-reference" id="rankReference"></div>
+ <div class="rule-grid"><section><h3>一・行棋與強弱</h3><p>每次走一隻，向上、下、左、右一格，不走斜線。高階可吃同階或低階，不可走進自己的獸穴。</p></section><section><h3>二・鼠能勝象</h3><p>陸地上的鼠能吃象，象不能吃鼠。只有鼠能進水；水中兩鼠可以互吃，不能跨越岸線吃子。</p></section><section><h3>三・獅虎越澗</h3><p>獅、虎可沿橫向或直向跳至對岸，落點仍按等級判定吃子。路線有任何一方的鼠，都不能跳。</p></section><section><h3>四・陷阱與和局</h3><p>走進敵方陷阱，就能被對方任何棋子吃掉；離開後恢復。相同局面及輪次出現三次，或連續100手未吃子，判和。</p></section></div>
+ <div class="manual-controls"><b>操作</b><p>點選我方動物，再點高亮格。拖曳旋轉、滾輪縮放；方向鍵移動游標、Enter 選取、Esc 取消。戰鬥時按 Space 跳過，P 暫停；上方可切換半速與原速。試映時可拖動進度條。悔棋會撤回你和電腦的上一輪。</p><p>戰鬥過場只呈現吃子，不改變規則，沒有血量、暴擊或命中率。獅對豹採用已確認的16幅連續原畫，呈現伏身、蹬地、騰空、接觸與落地；獅對其他動物使用只包含獅子的逐格特寫，保留正確對手；巨象對虎採用13幅獨立姿勢原畫，呈現移重、踏進、重壓與落定；象對其他動物使用象的逐格特寫，保留正確對手。其餘六種動物的進攻仍以漫畫分鏡呈現，不冒用獅或象的片段。棋盤為立體投影配插畫棋子，並非完整3D動物模型。原創配樂、同步戰鼓聲軌與合成動物叫聲已嵌入本檔，無需連線。切換到其他分頁時暫停聲音及過場。</p></div>
+ <p class="source-note">本版採「狼四、狗三」及以上規則，地方玩法可能不同。插畫取自本次對話中已確認的概念圖，局面由程式即時繪製，不是將概念圖當作可點擊棋盤。</p><button class="primary-btn" data-close="helpDialog">返回棋局 →</button>
+</dialog>
+<dialog id="audioDialog" class="modal audio-modal"><div class="modal-header"><div><span class="eyebrow">山河有聲</span><h2>弦音與戰鼓</h2></div><button class="close-dialog" data-close="audioDialog" aria-label="關閉">×</button></div>
+<p class="audio-description">落子聽弦，交鋒聞鼓。《踏嶽行軍》：132拍／分鐘，32小節主題。撥弦與笛聲呼應，弦樂、低銅管、太鼓與定音鼓推進；交鋒時同步加入戰鼓層，命中一刻配樂稍讓位給獸鳴與重擊。</p>
+<div class="audio-slider"><label for="musicVolume">背景配樂 <output id="musicVolumeValue" for="musicVolume">48%</output></label><input id="musicVolume" type="range" min="0" max="100" value="48" aria-label="背景配樂音量"></div>
+<div class="audio-slider"><label for="sfxVolume">動物與戰鬥音效 <output id="sfxVolumeValue" for="sfxVolume">72%</output></label><input id="sfxVolume" type="range" min="0" max="100" value="72" aria-label="音效音量"></div>
+<div class="sound-audition"><label for="soundAnimal">獸鳴試聽</label><select id="soundAnimal"><option value="8">象・嘶鳴</option><option value="7">獅・低吼</option><option value="6">虎・咆哮</option><option value="5">豹・嘶吼</option><option value="4">狼・長嚎</option><option value="3">犬・吠聲</option><option value="2">貓・嘶叫</option><option value="1">鼠・尖鳴</option></select><button id="testAnimalCall" class="action-btn">試聽獸鳴</button></div><div class="audio-controls"><button id="audioMusicToggle" class="action-btn">暫停配樂</button><button id="testSound" class="action-btn">試聽擊破音效</button></div><p class="audio-note">右上角可分別關閉音樂及音效。設定儲存在這個瀏覽器；獸鳴為分物種設計的合成擬聲，不是野生動物錄音。配樂採 TimGM6mb 樂器音色演奏原創旋律。</p></dialog>
+<dialog id="confirmDialog" class="modal compact-modal"><div class="eyebrow">另起一局</div><h2>重開棋局？</h2><p>目前棋局與悔棋紀錄會被重設，音效及難度設定不變。</p><div class="modal-buttons"><button class="action-btn" data-close="confirmDialog">保留棋局</button><button id="confirmNew" class="primary-btn">重新開局</button></div></dialog>
+<dialog id="resultDialog" class="modal result-modal"><span id="resultCode" class="eyebrow"></span><div id="resultEmblem">勝</div><h2 id="resultTitle"></h2><p id="resultReason"></p><div id="resultSummary"></div><div class="modal-buttons"><button id="reviewBtn" class="action-btn">檢視棋盤</button><button id="rematchBtn" class="primary-btn">再戰一局 →</button></div></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div><div id="fatal" class="fatal hidden"><h2>無法開啟棋局</h2><p id="fatalText"></p><p>請用支援 JavaScript 與 Canvas 的桌面瀏覽器開啟此 HTML 檔案。</p></div><noscript><div class="open-file-note">請將此 HTML 檔案儲存後，在 Chrome、Edge、Firefox 或 Safari 開啟。聊天或檔案管理器的預覽不一定會執行遊戲。</div></noscript>
+</div>
+<script>/*__ASSETS__*/</script><script>/*__RULES__*/</script><script>/*__AI__*/</script><script>/*__AUDIO_ASSETS__*/</script><script>/*__AUDIO__*/</script><script>/*__COMBAT__*/</script><script>/*__PAINTED__*/</script><script>/*__RENDERER__*/</script><script>/*__APP__*/</script>
+</body>
+</html>

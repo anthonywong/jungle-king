@@ -1,0 +1,26 @@
+{
+  "checkpoint": "2d-baseline",
+  "source_description": "Approved painted elephant-edition source snapshot",
+  "source_archive_sha256": "2e784f48ba6b02f280ba14290a9187c290c990340d784e3abb120894fcffb6bd",
+  "scope": "English naming, portable build entry points, identical rules/AI/media; no new game artwork or choreography",
+  "renamed_files": [
+    {
+      "file": "game/src/assets.js",
+      "before_sha256": "1ffec3a6b0e51132bfb192ef8969825d5314bfead5bc0c2f4cfef6fe9e72a3f0",
+      "after_sha256": "d941eef9f7f370e0f379188f64fe9f41043675ee9e941addf9120a251559c3b1",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "game/src/renderer.js",
+      "before_sha256": "c7aa7d1bad7aa61ba78d6a59480be6e6813a55637126de5ab38a0f858c95044a",
+      "after_sha256": "7a067a42952e72686dbe99077508fbae162f31daf83dc73204d477d26f116c67",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "game/tools/embed_assets.py",
+      "before_sha256": "7e3415dbbdee13cd640ab02d64154b0483fc8fa29f1fff74e8be4e922970a184",
+      "after_sha256": "f1310a8e9eadf312bb7e68204c1f4db12a71e81d392fb1a6c6cccd7b759ee1c2",
+      "reason": "English project branding or calligraphy asset alias"
+    }
+  ]
+}

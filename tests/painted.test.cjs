@@ -1,0 +1,24 @@
+'use strict';
+const assert=require('assert');const P=require('../game/src/painted.js');let n=0;
+function test(name,fn){fn();n++;console.log('PASS',name)}
+test('Approved lion/leopard film is used only for the matching species',()=>{for(let a=1;a<=8;a++)for(let d=1;d<=8;d++)assert.equal(P.variant(a,-d)==='lion-leopard',a===7&&d===5)});
+test('Every lion capture can use lion-only changing poses',()=>{for(let d=1;d<=8;d++)if(d!==5)assert.equal(P.variant(7,-d),'lion-pounce')});
+test('Other species are never mislabeled with lion artwork',()=>{for(let a=1;a<=8;a++)if(a!==7&&a!==8)for(let d=1;d<=8;d++)assert.equal(P.variant(a,-d),'comic-panels')});
+test('The exact-pair selection works for both player sides',()=>assert.equal(P.variant(-7,5),'lion-leopard'));
+test('Sixteen source frames have strictly positive durations',()=>assert(P.holds.length===16&&P.holds.every(x=>x>0)));
+test('Every source frame is reachable and is selected in order',()=>P.starts.forEach((t,i)=>assert.equal(P.frame(t+.001).index,i)));
+test('The animation holds the last pose until completion',()=>assert.equal(P.frame(P.total-.001).index,15));
+test('Frame indices never leave the sixteen-frame range',()=>{for(let t=0;t<10;t+=.017)assert(P.frame(t).index>=0&&P.frame(t).index<=15)});
+test('There is exactly one capture impact per sequence',()=>{for(let a=1;a<=8;a++)for(let d=1;d<=8;d++)assert.equal(P.events(a,-d).filter(x=>x.name==='impact').length,1)});
+test('Impact is synchronized with the first contact hold',()=>assert.equal(P.events(7,-5).find(x=>x.name==='impact').at,P.starts[7]));
+test('No sound event is scheduled beyond the visual sequence',()=>{for(let a=1;a<=8;a++)for(let d=1;d<=8;d++)assert(P.events(a,-d).every(e=>e.at<P.length(a,-d)))});
+test('Reduced-motion film has a shorter, static-pose timeline',()=>{assert.equal(P.length(7,-5,true),1.3);assert.equal(P.frame(.1,true).index,0);assert.equal(P.frame(.6,true).index,11);assert.equal(P.frame(1.1,true).index,15)});
+test('Reduced-motion mode does not schedule running or leap sounds',()=>assert.deepEqual(P.events(7,-5,true).map(e=>e.name),['impact']));
+test('Generic illustrations use a shorter, independent montage',()=>assert.equal(P.length(6,-5),3.3));
+test('Elephant full film is only used for an actual tiger target',()=>{for(let d=1;d<=8;d++)assert.equal(P.variant(8,-d),d===6?'elephant-tiger':'elephant-charge')});
+test('Both armies receive the elephant frame sequence',()=>assert.equal(P.variant(-8,6),'elephant-tiger'));
+test('Thirteen distinct elephant poses are reachable',()=>{assert.equal(P.elephantHolds.length,13);P.elephantStarts.forEach((t,i)=>assert.equal(P.elephantFrame(t+.001).index,i))});
+test('Elephant contact and its impact event align precisely',()=>assert.equal(P.events(8,-6).find(e=>e.name==='impact').at,P.elephantStarts[7]));
+test('Elephant sound events are monotonic and finish within the film',()=>{const ev=P.events(8,-6);assert(ev.every((x,i)=>!i||x.at>=ev[i-1].at));assert(ev.every(x=>x.at<P.length(8,-6)))});
+test('Elephant reduced motion retains an elephant impact pose',()=>{assert.equal(P.elephantFrame(.6,true).index,9);assert.equal(P.length(8,-6,true),1.3)});
+console.log(n+' painted-timeline tests passed.');

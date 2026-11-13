@@ -1,0 +1,23 @@
+# Generated outputs. Rebuild after switching branches.
+/dist/
+/checks/
+__pycache__/
+*.py[cod]
+.DS_Store
+node_modules/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+*.log
+/game/preview-frames/
+/game/*-review.png
+/game/audio/*-mix.wav
+/game/audio/preview*.wav
+/game/*.mp4
+/tests/*-results.json
+/tests/*-results.txt
+/tests/*-results.log
+/tests/*-script-*.mjs
+/tests/scene-bundle-check.mjs

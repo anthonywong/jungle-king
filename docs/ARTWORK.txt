@@ -1,0 +1,9 @@
+Artwork scope — Elephant Edition 6.0
+
+The sixteen lion frames and standalone capture-brush.webp are unchanged from
+the approved Painted Edition. A new thirteen-pose elephant sequence and portrait
+have been added. ART_ELEPHANT.txt documents the selected source frames.
+Full elephant/tiger scenes are only used for that pairing. Other elephant
+targets retain the correct defender through split-panel framing.
+Six other species retain their existing painted cut-ins, not new pose films.
+See README.txt for resolution and animation limits; CREDITS.txt for provenance.
