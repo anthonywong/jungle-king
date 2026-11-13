@@ -1,0 +1,59 @@
+HISTORICAL REPORT — imported scope, not fresh browser validation.
+
+山河獸影 — PLAYABLE REALTIME CAPTURE 01 — VERIFICATION SCOPE
+
+EXECUTED HERE
+- 53 original rules / AI tests, including legal full AI-vs-AI games.
+- 20 original painted timeline tests (retained matchups and motion reduction).
+- 22 NEW capture lifecycle tests against the ACTUAL chess app and capture host
+  in a Node VM with a synthetic DOM, stubbed visual/audio components, and
+  protocol messages supplied by the test. Includes exactly-once capture,
+  computer reply, duplicate callbacks, loading skip, contact skip, timeout,
+  explicit load failure, no-confirmed-contact fallback, replay, pause/hide,
+  reset epoch, wrong source/token, red attacker, reduced motion and undo.
+- 10 NEW scene-protocol / transition tests. These exercise source event logic
+  with stubbed renderer hooks, not a browser or a substitute physics engine.
+- 38 static packaging / syntax / source-integrity / actual-asset checks.
+  Runtime GLB bytes match the accepted candidate runtime file; its original
+  user-uploaded binary checksum, 107-joint skin and five clips are verified.
+  Original game rules, AI, painted assets, music, and 14 scene choreography/
+  model-control modules are unchanged from their recorded baseline hashes.
+
+RUNTIME TESTS NOT EXECUTED HERE
+Actual browser WebGL rendering/shader compilation, actual Rapier contacts,
+real audio output, performance, Safari, physical mobile devices, accessibility
+with assistive technology and cross-restart file:// save persistence.
+This environment exposes only read-only connected-browser tools and cannot
+resolve the external dependency-download hosts from the build container.
+NO passed runtime result or live screenshot is claimed.
+
+ACTUAL BROWSER CHECK INCLUDED, NOT PREFILLED
+python3 launch.py --check
+Then press Run real-browser checks. This runs the REAL shipped game and scene
+in the user's browser, records real contact/engine/frame evidence, AI return,
+replay, pause/skip, and separately tests an explicitly injected loading failure.
+If 3D falls back instead of loading, the real-3D check FAILS. The checker does
+not fabricate collision success or count painted fallback as a Rapier pass.
+The result may be exported locally; it is never uploaded.
+
+SCOPE / KNOWN LIMITS
+Only elephant attacking tiger uses the real-time scene. Other captures use
+retained painted presentation. Only the accepted stomp is adapted. Supporting
+tiger geometry and the board's painted pieces are unchanged. The camera and
+active strike/contact curves are preserved; entry (160 ms) and return-to-idle
+(280 ms) blending is applied outside the active contact window. No new claim
+of anatomical perfection, physical biomechanics, or a solved all-pair rig.
+The rendering process sends presentation evidence, not chessboard mutations.
+The game commits the legal move once after presentation; physics cannot
+cancel a legal capture. Failure/missed scene contact invokes painted fallback.
+Skipping bypasses visuals but still commits that same legal move once.
+Reload during a pending capture returns to the previous saved position.
+
+REPRODUCE SOURCE TESTS
+python3 build.py
+node --test tests/capture-lifecycle.test.cjs tests/scene-contract.test.mjs
+node tests/rules.test.cjs
+node tests/painted.test.cjs
+python3 tests/package-check.py
+
+No live site, Library file, account setting or previous package was changed.

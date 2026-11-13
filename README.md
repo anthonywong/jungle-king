@@ -1,6 +1,6 @@
 # Jungle King · 山河獸影
 
-Approved painted-game baseline. This repository preserves two presentations of the same animal-chess
+Experimental real-time capture integration. This repository preserves two presentations of the same animal-chess
 game, not two unrelated rule engines. Traditional Chinese game text is retained.
 
 ## Branches and checkpoints

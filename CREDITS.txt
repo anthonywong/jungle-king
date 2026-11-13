@@ -1,21 +1,27 @@
-山河獸影 — 撼嶽篇 6.0: artwork and audio provenance
+山河獸影 — PLAYABLE REALTIME CAPTURE 01
 
-ART
-Lion sequence and brush-written 破: artwork generated and approved earlier in
-this conversation; retained without redrawing the glyph or replacing the lion.
-Elephant sequence: generated for this update, curated into thirteen usable
-poses. Earlier source poses with inaccurate open-mouth anatomy were rejected.
-The other painted animals and mountain/interface assets come from the previous
-game. The game uses no official Bandai characters, music, logos or game assets.
-No affiliation or endorsement by a publisher or artist is claimed.
+African Elephant Bull 3D model by AnimalAnimator.com
+https://animalanimator.com
+Source: https://github.com/animalanimator/african-elephant-rig-blender/releases/tag/v3.0
+Licensed under CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+Full legal text: https://creativecommons.org/licenses/by/4.0/legalcode
+No endorsement implied. The external asset is provided AS IS without warranties.
+Modifications: embedded textures downsampled, coordinate alignment, custom
+stomp-pose adaptation, and short source-idle/attack transition blending. Geometry,
+weights and animation data of the supplied runtime asset are not replaced.
+Original user-supplied GLB digest:
+6737c6504a6e3bde75410981f3309e8af42da0fe06fef55a1ccc2fe5ce0c8f60
 
-AUDIO
-踏嶽行軍: original melody, harmony, arrangement and adaptive two-stem mix
-created for this update. Eight animal-call imitations and all impact/foley
-layers are original procedural sound designs. They are not field recordings.
-Music instruments were rendered using libfluidsynth and the locally installed
-TimGM6mb instrument bank. Credited bank authors: Tim Brechbill and David Bolton.
-The bank itself is not included. Its installed copyright/notice text and the
-GPL-2 license are retained in licenses/TimGM6mb.txt and licenses/GPL-2.txt.
-The source package includes the composition and rendering code and rendered
-music stems; no typeface files or instrument-bank files are distributed.
+Retained project work: painted board and animal art, approved lion/elephant
+capture frames, brush-written 破, tiger mesh, cinematic choreography,
+Three.js/Rapier integration, original soundtrack and synthesized animal calls.
+Additional historical attribution is retained in GAME-CREDITS.txt and
+SCENE-CREDITS.txt. No existing publisher characters, songs or logos included.
+
+Engine dependencies are fetched from their pinned public versions at runtime:
+Three.js 0.180.0 and GLTFLoader — MIT, Three.js contributors.
+Rapier JavaScript compat 0.17.3 — Apache-2.0, Dimforge contributors.
+
+The earlier score was rendered with libfluidsynth and the TimGM6mb bank.
+Related historical notices are retained in licenses/. No soundfont or font files
+are distributed. Audio is played from the already-approved rendered assets.

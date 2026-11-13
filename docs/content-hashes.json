@@ -57,6 +57,14 @@
     "game/audio/mountain-battle.mp3": "0ef425e18cc833655868d83dc65773b01cf203624b49a21274e4051cb468479e",
     "game/audio/mountain-score.mp3": "8691f5bd10ba5d76fa75b2b34d43e1b17125408828dafdf5213decb3f932713e",
     "game/audio/score-info.json": "ef7402657dc29f4c265738b8d8759ee01da123a8b6add780e29b49375b398036",
+    "scene/assets/candidate-original.glb": "6737c6504a6e3bde75410981f3309e8af42da0fe06fef55a1ccc2fe5ce0c8f60",
+    "scene/assets/candidate-rig.json": "6f090d87f25fde3db18a32b5aaa5f7b9ba2f01d3f0121e4819421691ac9514f8",
+    "scene/assets/candidate-runtime.glb": "ceddfc921db4ad07aaeba7978e97c3d6e18d19796c2c31a063c3beedcdedf0c1",
+    "scene/assets/capture-brush.webp": "82bb33332868369d47837cc87fbfd0ebc666bd961f0166526d14559a3411a73a",
+    "scene/assets/ground-relief.png": "8405d05fc5361c674298fa393eb5d8d58a85c912090c6ad11a68098fa9d0ddc1",
+    "scene/assets/landscape-wide.webp": "12a47ba37e28f6dc1c97ea6a6124aa3bc493cb532c29af46f9cae71f7ffc6693",
+    "scene/assets/skin-relief.png": "0e72d3806290d4306ab8eab36c7b797ebffc4b93a5413b52fc0eee0215019eaa",
+    "scene/assets/tiger-mesh.json": "692327fda8e4c5e77ebe522382031f1d47d93b5bfa95007562b5d17e33baaca8",
     "game/src/rules.js": "034d3e3979ac2029b77b38bdffb00b5aade82b44315dd3241ceb7a8bba1ca1a9",
     "game/src/ai.js": "b44ac5402d7c2fef3cf0312244699a6084687e931a227e67287cac4a94216d62"
   }

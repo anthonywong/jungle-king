@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jungle King | 山河獸影 — real browser capture checks</title>
+<style>body{font:15px/1.6 system-ui;margin:24px auto;max-width:1200px;padding:0 20px;background:#eee8dc;color:#273026}h1{font-size:26px;margin-bottom:10px}button{padding:10px 16px;border:1px solid #7c7055;background:#f8f1df;margin:8px 8px 8px 0;cursor:pointer}iframe{display:block;width:100%;height:720px;border:1px solid #bcb199}pre{white-space:pre-wrap;background:#f8f2e6;padding:16px;max-height:440px;overflow:auto}.note{max-width:900px;font-size:13px}</style>
+<h1>Real-browser capture checks</h1><p class="note">This optional page runs the actual game, its WebGL scene and Rapier in <em>your</em> browser. Nothing is marked as passed in advance. Use <code>python3 launch.py --check</code>: browsers usually prevent this test page from inspecting local <code>file://</code> frames. The checks use a temporary scenario and restore the prior position. No results or files are uploaded.</p>
+<button id="run">Run real-browser checks</button><button id="export" disabled>Export results</button><span id="status">Not run.</span><pre id="results">No results yet.</pre><iframe id="game" src="index.html#test" title="Actual game under test"></iframe>
+<script>
+'use strict';const $=id=>document.getElementById(id);let results=null;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function wait(check,limit=12000){const start=performance.now();while(performance.now()-start<limit){if(check())return;await sleep(60)}throw Error('Timed out waiting for the running game')}
+function assert(v,msg){if(!v)throw Error(msg)}
+function draw(){ $('results').textContent=JSON.stringify(results,null,2) }
+$('run').onclick=async()=>{
+ $('run').disabled=true;$('status').textContent='Running on this device…';results={started:new Date().toISOString(),userAgent:navigator.userAgent,checks:[],captures:[],notChecked:['Safari/other devices','Full game aesthetic approval','Manual assistive technology interaction']};draw();let g;
+ async function check(name,fn){try{const details=await fn();results.checks.push({name,passed:true,details:details||null})}catch(e){results.checks.push({name,passed:false,error:String(e.message||e)})}draw()}
+ try{
+  await wait(()=>{g=$('game').contentWindow.BeastGame;return !!g?.startScenario},20000);
+  // The audio context is unlocked only by this explicit user button.
+  await g.sound.unlock();g.settings.difficulty='easy';g.settings.cinematic=true;g.settings.real3d=true;g.settings.reduced=false;
+  async function fresh(){if(g.capture.active)g.capture.finish('skip','diagnostic-reset');if(g.getUI().battle)g.endBattle();await sleep(100);g.exitScenario();g.startScenario(8);await sleep(30)}
+  await fresh();
+  await check('Loaded actual board: elephant D5, tiger D6',()=>{const s=g.getState();assert(s.board[31]===8&&s.board[24]===-6,'Wrong test position')});
+  await check('Real 3D capture, confirmed limb contact and one computer reply',async()=>{
+   const promise=g.move({from:31,to:24});await wait(()=>!g.getUI().pending,65000);await promise;
+   const r=g.capture.report().history.at(-1);results.captures.push(r);
+   await wait(()=>g.getState().ply===2&&!g.getUI().busy,12000);
+   assert(r?.kind==='complete','The game used fallback/skip: '+(r?.reason||'no 3D report'));
+   assert(r.report?.contact===true&&r.report.contactCount===1,'Missing actual single contact');
+   assert(r.report.renderFrames>0&&r.report.threeRevision==='180'&&r.report.rapierVersion==='0.17.3','Missing real-engine rendering evidence');
+   assert(g.getState().board[24]===8&&g.getState().turn===1,'Wrong post-capture board');return r.report;
+  });
+  await check('Replay returns without changing the position',async()=>{
+   const before=JSON.stringify(g.getState());await g.replayLastCapture();assert(JSON.stringify(g.getState())===before,'Replay changed board state');
+  });
+  await fresh();
+  await check('Pause freezes the real scene, then skip commits one move',async()=>{
+   const promise=g.move({from:31,to:24});await wait(()=>g.capture.session?.started,45000);await sleep(120);g.capture.pause(true);
+   await sleep(100);const scene=$('game').contentDocument.getElementById('captureFrame').contentWindow;
+   const t=scene.LAB.report().animationTime;await sleep(400);assert(scene.LAB.report().animationTime===t,'Physics/animation advanced while paused');
+   assert(g.getState().ply===0,'Capture committed while paused');g.capture.finish('skip','diagnostic-skip');await promise;
+   assert(g.getState().ply===1,'Skip did not commit once');await wait(()=>g.getState().ply===2&&!g.getUI().busy,12000);
+  });
+  await fresh();
+  await check('Injected loading failure uses real painted fallback and keeps game playable',async()=>{
+   g.capture.testMode='fail-load';const promise=g.move({from:31,to:24});await wait(()=>g.getUI().battle,8000);assert(g.getState().ply===0,'Committed before fallback');
+   // Let the original painted capture finish normally, not an artificial success message.
+   await wait(()=>!g.getUI().pending,14000);await promise;g.capture.testMode=null;
+   const r=g.capture.report().history.at(-1);assert(r.kind==='fallback','Failure was not reported');await wait(()=>g.getState().ply===2&&!g.getUI().busy,12000);return {outcome:r.kind,reason:r.reason,turn:g.getState().turn};
+  });
+ }catch(e){results.checks.push({name:'Test harness access/startup',passed:false,error:String(e.message||e)})}
+ finally{if(g){g.capture.testMode=null;if(g.capture.active)g.capture.finish('skip','diagnostic-cleanup');if(g.getUI().battle)g.endBattle();await sleep(100);g.exitScenario();}results.finished=new Date().toISOString();results.passed=results.checks.every(c=>c.passed);$('status').textContent=results.passed?'All executed checks passed.':'Some checks failed. See evidence below.';$('export').disabled=false;$('run').disabled=false;draw()}
+};
+$('export').onclick=()=>{const a=document.createElement('a'),url=URL.createObjectURL(new Blob([JSON.stringify(results,null,2)],{type:'application/json'}));a.href=url;a.download='jungle-king-real-browser-checks.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
+</script></html>

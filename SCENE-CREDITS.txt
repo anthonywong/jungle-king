@@ -1,0 +1,46 @@
+JUNGLE KING — IMPORTED ELEPHANT INTEGRATION 01
+
+EXTERNAL CHARACTER
+African Elephant Bull 3D model by AnimalAnimator.com
+https://animalanimator.com
+Source: https://github.com/animalanimator/african-elephant-rig-blender/releases/tag/v3.0
+Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
+License: https://creativecommons.org/licenses/by/4.0/
+Legal text: https://creativecommons.org/licenses/by/4.0/legalcode
+Original asset supplied by the user and matched to the published v3.0 digest:
+6737c6504a6e3bde75410981f3309e8af42da0fe06fef55a1ccc2fe5ce0c8f60
+
+Changes in this integration: embedded images downsampled for browser memory
+use (base colour 4K, normal/roughness 2K, eyes 1K); coordinate alignment and
+custom pose mapping to the existing game attack. The source positions,
+indices, normals, weights, inverse bind matrices and animation accessor data
+were compared and remain unchanged in the runtime GLB.
+The original unmodified GLB is retained in the source package.
+No endorsement, sponsorship or final-quality approval is implied.
+The external asset is provided AS IS without warranties under its license.
+
+RETAINED PROJECT WORK
+V08 procedural elephant: baseline comparison only.
+V07 tiger and existing battle/camera/physics controllers: retained project work.
+capture-brush.webp: previously approved painted brush-written 破.
+approved-reference.mp4: prior painted elephant capture; reference only.
+landscape-wide.webp: retained painted background crop.
+Music: 踏嶽行軍, earlier project's original composition/arrangement.
+Elephant/tiger calls: synthesized imitations, not wildlife recordings.
+No Bandai game characters, publisher soundtrack or logos are included.
+
+The earlier soundtrack instruments were rendered with libfluidsynth and the
+TimGM6mb bank (Tim Brechbill and David Bolton). The inherited text notices
+are retained in licenses/TimGM6mb.txt and licenses/GPL-2.txt.
+No soundfont or typeface/font files are distributed.
+
+LIBRARIES — FETCHED AT RUNTIME, NOT INCLUDED
+Three.js r180 (0.180.0), including GLTFLoader: MIT, Three.js contributors.
+https://github.com/mrdoob/three.js/tree/r180
+Rapier JS compat 0.17.3: Apache-2.0, Dimforge contributors.
+https://github.com/dimforge/rapier.js
+
+PREVIEWS
+Any included CPU reviews evaluate the actual imported vertices, joints and
+weights with neutral approximate lighting. They are not browser screenshots,
+not concept illustrations and not records of executed Rapier interactions.

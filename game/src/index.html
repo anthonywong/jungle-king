@@ -2,8 +2,8 @@
 <html lang="zh-Hant">
 <head><meta name="application-name" content="Jungle King">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#1b2723">
-<meta name="description" content="山河獸影：寫實漫畫風鬥獸棋。立體山水棋盤、八獸對弈、漫畫戰鬥過場，可離線與電腦對戰。">
-<title>Jungle King | 山河獸影 · 撼嶽篇｜鬥獸棋</title>
+<meta name="description" content="山河獸影：寫實漫畫風鬥獸棋。立體山水棋盤、八獸對弈、原畫與即時 3D 捕獲。棋局可離線；首次 3D 引擎載入需要網路。">
+<title>Jungle King | 山河獸影 · 實時對弈｜鬥獸棋</title>
 <style>/*__CSS__*/</style>
 
 </head>
@@ -34,12 +34,13 @@
   <div id="tacticalStatus" class="tactical-status"><span class="eyebrow">局中有勢</span><p>獅虎越澗，靈鼠渡河。獸穴周圍的陷阱，能逆轉強弱。</p></div>
   <div class="action-row"><button id="hintBtn" class="action-btn">觀勢 <span>提示</span></button><button id="undoBtn" class="action-btn">↶ <span>悔棋</span></button></div>
   <div class="settings-row"><label for="difficulty">對手棋力</label><select id="difficulty"><option value="easy">初試 · 入門</option><option value="normal" selected>對弈 · 標準</option><option value="hard">高手 · 挑戰</option></select></div>
-  <label class="toggle-row" for="cinematic"><span>漫畫戰鬥過場</span><input id="cinematic" type="checkbox" checked><span class="switch"></span></label>
+  <label class="toggle-row" for="real3d"><span>象對虎 · 即時 3D</span><input type="checkbox" id="real3d" checked><span class="switch"></span></label>
+<label class="toggle-row" for="cinematic"><span>漫畫戰鬥過場</span><input id="cinematic" type="checkbox" checked><span class="switch"></span></label>
   <label class="toggle-row" for="reduced"><span>減少動態與震動</span><input id="reduced" type="checkbox"><span class="switch"></span></label>
   <div class="demo-row"><label for="demoAnimal">過場試映</label><select id="demoAnimal" aria-label="選擇演示動物"><option value="7">獅・猛獅撲擊</option><option value="6">虎・猛虎躍澗</option><option value="5">豹・豹影閃擊</option><option value="4">狼・蒼狼追獵</option><option value="3">狗・獵犬突襲</option><option value="2">貓・靈貓疾撲</option><option value="1">鼠・靈鼠穿陣</option><option value="8">象・巨象撼地</option></select><button id="demoBtn" class="small-btn">觀看</button></div>
   <section class="battle-log"><div class="log-title"><span class="eyebrow">對弈紀錄</span><span id="aiStats">本機運算・無需連線</span></div><ol id="log"><li class="log-empty">一局山河，從此落子。</li></ol></section>
-  <div class="secondary-actions"><button id="elephantScenarioBtn" class="small-btn">巨象撼虎</button><button id="scenarioBtn" class="small-btn">獅豹對決</button><button id="trainingBtn" class="small-btn">互動棋藝演練</button><button id="newBtn" class="small-btn">重開一局</button></div>
-  <div class="panel-footer"><span>原畫逐格・山河對弈</span><span>撼嶽版 6.0</span></div>
+  <div class="secondary-actions"><button id="replayCapture" class="small-btn" disabled>重播上次捕獲</button><button id="captureReport" class="small-btn">匯出演出記錄</button><button id="elephantScenarioBtn" class="small-btn">巨象撼虎</button><button id="scenarioBtn" class="small-btn">獅豹對決</button><button id="trainingBtn" class="small-btn">互動棋藝演練</button><button id="newBtn" class="small-btn">重開一局</button></div>
+  <div class="panel-footer"><span>原畫棋盤・即時捕獲</span><span>對弈接合 01</span></div>
  </aside>
 </main>
 <div id="intro" class="intro-overlay">
@@ -55,11 +56,11 @@
    <h2>獅動風生。象踏山河。</h2>
    <p class="intro-desc">八獸越澗，強弱相制。<br>在山水畫卷中，與電腦對弈。</p>
    <button id="startBtn" class="primary-btn">入局對弈 <span>→</span></button>
-   <button id="elephantIntro" class="scenario-launch elephant-launch">試玩巨象撼虎 <span>新・逐格原畫</span></button>
+   <button id="elephantIntro" class="scenario-launch elephant-launch">試玩 3D 巨象捕獲 <span>新・即時 3D</span></button>
    <button id="scenarioIntro" class="scenario-launch">試玩獅豹對決 <span>原畫逐格演出</span></button>
    <button id="resumeBtn" class="resume-btn hidden">續上局 →</button>
-   <div class="intro-bottom"><button id="introElephantDemo">先看巨象演出</button><span>／</span><button id="introDemo">獅王演出</button><span>／</span><button id="introTraining">學習棋規</button></div>
-   <p class="edition-note">立體棋盤 · 本機 AI · 無需連線</p>
+   <div class="intro-bottom"><button id="introElephantDemo">預覽 3D 巨象演出</button><span>／</span><button id="introDemo">獅王演出</button><span>／</span><button id="introTraining">學習棋規</button></div>
+   <p class="edition-note">本機 AI · 棋局可離線 · 3D 首載需連網</p>
   </div>
   <div class="intro-footnote">點擊後開啟配樂與音效 · 可獨立調整音量</div>
  </div>
@@ -77,7 +78,7 @@
  <div class="rule-grid"><section><h3>一・行棋與強弱</h3><p>每次走一隻，向上、下、左、右一格，不走斜線。高階可吃同階或低階，不可走進自己的獸穴。</p></section><section><h3>二・鼠能勝象</h3><p>陸地上的鼠能吃象，象不能吃鼠。只有鼠能進水；水中兩鼠可以互吃，不能跨越岸線吃子。</p></section><section><h3>三・獅虎越澗</h3><p>獅、虎可沿橫向或直向跳至對岸，落點仍按等級判定吃子。路線有任何一方的鼠，都不能跳。</p></section><section><h3>四・陷阱與和局</h3><p>走進敵方陷阱，就能被對方任何棋子吃掉；離開後恢復。相同局面及輪次出現三次，或連續100手未吃子，判和。</p></section></div>
  <div class="manual-controls"><b>操作</b><p>點選我方動物，再點高亮格。拖曳旋轉、滾輪縮放；方向鍵移動游標、Enter 選取、Esc 取消。戰鬥時按 Space 跳過，P 暫停；上方可切換半速與原速。試映時可拖動進度條。悔棋會撤回你和電腦的上一輪。</p><p>戰鬥過場只呈現吃子，不改變規則，沒有血量、暴擊或命中率。獅對豹採用已確認的16幅連續原畫，呈現伏身、蹬地、騰空、接觸與落地；獅對其他動物使用只包含獅子的逐格特寫，保留正確對手；巨象對虎採用13幅獨立姿勢原畫，呈現移重、踏進、重壓與落定；象對其他動物使用象的逐格特寫，保留正確對手。其餘六種動物的進攻仍以漫畫分鏡呈現，不冒用獅或象的片段。棋盤為立體投影配插畫棋子，並非完整3D動物模型。原創配樂、同步戰鼓聲軌與合成動物叫聲已嵌入本檔，無需連線。切換到其他分頁時暫停聲音及過場。</p></div>
  <p class="source-note">本版採「狼四、狗三」及以上規則，地方玩法可能不同。插畫取自本次對話中已確認的概念圖，局面由程式即時繪製，不是將概念圖當作可點擊棋盤。</p><button class="primary-btn" data-close="helpDialog">返回棋局 →</button>
-</dialog>
+<div class="runtime-note"><b>象虎即時 3D 捕獲</b><p>巨象捕獲猛虎使用 Three.js + Rapier；其餘組合保留原畫演出。GLB 模型隨包內嵌，自動載入。首次即時演出需連網載入固定版本引擎。不能載入、沒有可確認接觸或失去圖形裝置時，切換到原畫演出。合法吃子不由物理決定。</p><p>演出中按 P 暫停；Space 或 Esc 跳過。切換分頁會暫停，回來後按繼續。重播不改變棋局。減少動態模式使用較短原畫演出。</p><p>African Elephant Bull 3D model by AnimalAnimator.com, CC BY 4.0. Texture resizing, alignment and custom stomp adapter. 作者、授權與修改說明見隨包 CREDITS.txt；不代表原作者認可本遊戲。</p></div></dialog>
 <dialog id="audioDialog" class="modal audio-modal"><div class="modal-header"><div><span class="eyebrow">山河有聲</span><h2>弦音與戰鼓</h2></div><button class="close-dialog" data-close="audioDialog" aria-label="關閉">×</button></div>
 <p class="audio-description">落子聽弦，交鋒聞鼓。《踏嶽行軍》：132拍／分鐘，32小節主題。撥弦與笛聲呼應，弦樂、低銅管、太鼓與定音鼓推進；交鋒時同步加入戰鼓層，命中一刻配樂稍讓位給獸鳴與重擊。</p>
 <div class="audio-slider"><label for="musicVolume">背景配樂 <output id="musicVolumeValue" for="musicVolume">48%</output></label><input id="musicVolume" type="range" min="0" max="100" value="48" aria-label="背景配樂音量"></div>
@@ -87,6 +88,12 @@
 <dialog id="resultDialog" class="modal result-modal"><span id="resultCode" class="eyebrow"></span><div id="resultEmblem">勝</div><h2 id="resultTitle"></h2><p id="resultReason"></p><div id="resultSummary"></div><div class="modal-buttons"><button id="reviewBtn" class="action-btn">檢視棋盤</button><button id="rematchBtn" class="primary-btn">再戰一局 →</button></div></dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div><div id="fatal" class="fatal hidden"><h2>無法開啟棋局</h2><p id="fatalText"></p><p>請用支援 JavaScript 與 Canvas 的桌面瀏覽器開啟此 HTML 檔案。</p></div><noscript><div class="open-file-note">請將此 HTML 檔案儲存後，在 Chrome、Edge、Firefox 或 Safari 開啟。聊天或檔案管理器的預覽不一定會執行遊戲。</div></noscript>
 </div>
+<section id="captureLayer" class="capture-layer" role="dialog" aria-modal="true" aria-label="巨象撼虎即時演出" aria-hidden="true" inert>
+ <header class="capture-bar"><div><small>山河獸影 / 即時對弈</small><strong id="captureWho">巨象撼虎</strong></div><div class="capture-actions"><button id="captureSound" aria-pressed="true">獸鳴：開</button><button id="capturePause" disabled>暫停 / P</button><button id="captureSkip">跳過演出</button></div></header>
+ <div class="capture-stage"><iframe id="captureFrame" title="即時象虎戰鬥" sandbox="allow-scripts allow-same-origin" tabindex="-1" allow="autoplay"></iframe><div id="captureLoading" class="capture-loading"><span>巨象撼虎</span><p>正在準備即時演出。象體已內嵌，無需匯入模型。</p><p>初次需要連網載入 3D 引擎；可直接跳過，不影響合法吃子。</p><button id="captureFallback">改看原畫演出</button></div></div>
+ <footer class="capture-footer"><span id="captureStatus" role="status" aria-live="polite">載入中</span><small>Space / Esc 跳過 · P 暫停</small></footer>
+</section>
+<script>/*__CAPTURE_CONTRACT__*/</script><script>/*__CAPTURE_PRESENTER__*/</script><script>/*__CAPTURE_FOLEY__*/</script>
 <script>/*__ASSETS__*/</script><script>/*__RULES__*/</script><script>/*__AI__*/</script><script>/*__AUDIO_ASSETS__*/</script><script>/*__AUDIO__*/</script><script>/*__COMBAT__*/</script><script>/*__PAINTED__*/</script><script>/*__RENDERER__*/</script><script>/*__APP__*/</script>
 </body>
 </html>

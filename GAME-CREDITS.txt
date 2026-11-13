@@ -1,0 +1,21 @@
+山河獸影 — 撼嶽篇 6.0: artwork and audio provenance
+
+ART
+Lion sequence and brush-written 破: artwork generated and approved earlier in
+this conversation; retained without redrawing the glyph or replacing the lion.
+Elephant sequence: generated for this update, curated into thirteen usable
+poses. Earlier source poses with inaccurate open-mouth anatomy were rejected.
+The other painted animals and mountain/interface assets come from the previous
+game. The game uses no official Bandai characters, music, logos or game assets.
+No affiliation or endorsement by a publisher or artist is claimed.
+
+AUDIO
+踏嶽行軍: original melody, harmony, arrangement and adaptive two-stem mix
+created for this update. Eight animal-call imitations and all impact/foley
+layers are original procedural sound designs. They are not field recordings.
+Music instruments were rendered using libfluidsynth and the locally installed
+TimGM6mb instrument bank. Credited bank authors: Tim Brechbill and David Bolton.
+The bank itself is not included. Its installed copyright/notice text and the
+GPL-2 license are retained in licenses/TimGM6mb.txt and licenses/GPL-2.txt.
+The source package includes the composition and rendering code and rendered
+music stems; no typeface files or instrument-bank files are distributed.

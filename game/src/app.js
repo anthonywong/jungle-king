@@ -18,20 +18,34 @@ function portrait(rank=7,side=1){
  return `<img class="painted-animal painted-${rank}" src="${ART[key]}" alt="${UNITS[rank].name}" draggable="false">`;
 }
 const sound=new InkAudio();
-let settings={difficulty:'normal',cinematic:true,reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,sound:true,music:true,musicVolume:.48,sfxVolume:.72};
+const captureFoley=new CaptureFoley(sound);
+let settings={difficulty:'normal',real3d:true,cinematic:true,reduced:matchMedia('(prefers-reduced-motion: reduce)').matches,sound:true,music:true,musicVolume:.48,sfxVolume:.72};
 function loadJSON(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch{return null;}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
-const savedSettings=loadJSON('beast-ink.settings.v2');if(savedSettings&&typeof savedSettings==='object'){for(const k of ['cinematic','reduced','sound','music'])if(typeof savedSettings[k]==='boolean')settings[k]=savedSettings[k];if(['easy','normal','hard'].includes(savedSettings.difficulty))settings.difficulty=savedSettings.difficulty;}
+const savedSettings=loadJSON('beast-ink.settings.v2');if(savedSettings&&typeof savedSettings==='object'){for(const k of ['cinematic','real3d','reduced','sound','music'])if(typeof savedSettings[k]==='boolean')settings[k]=savedSettings[k];if(['easy','normal','hard'].includes(savedSettings.difficulty))settings.difficulty=savedSettings.difficulty;}
 for(const k of ['musicVolume','sfxVolume'])if(Number.isFinite(savedSettings?.[k]))settings[k]=clamp(savedSettings[k],0,1);
 sound.configure(settings);
 let saved=loadJSON('beast-ink.save.v2');if(saved&&(!R.validSaved(saved.state)||!Array.isArray(saved.logs)||!Array.isArray(saved.snapshots)))saved=null;
 let state=R.initial(),selected=null,legal=[],hint=null,last=null,logs=[],snapshots=[],started=false,busy=false,motion=null,battle=null,training=null,epoch=0,worker=null,workerToken=0,workerPending=null,toastTimer=null,messageTimer=null,kbCursor=56,captureFX=null,hiddenAt=null;
 let renderer;
-let scenarioReturn=null,scenarioKind=7;
+let scenarioReturn=null,scenarioKind=7,lastCapture=null,pendingMove=null;
+const capture=new CapturePresenter({
+ begin:()=>{busy=true;sound.setBattle(true,8);updateHUD();},
+ sound:(action,value)=>captureFoley.event(action,value),mix:value=>captureFoley.mix(value),
+ pause:value=>{captureFoley.pause();sound.visibility(document.hidden||value);},
+ end:()=>{captureFoley.pause();sound.visibility(document.hidden);sound.setBattle(false);},
+ toggleSound:()=>{settings.sound=!settings.sound;updateSettings();captureFoley.bind();if(!settings.sound)captureFoley.pause();}
+});
+function saveCaptureReport(){
+ const report={...capture.report(),chess:{ply:state.ply,turn:state.turn,key:R.key(state),pending:!!pendingMove},note:'Runtime capture reports are recorded only on this device. No upload.'};
+ const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='jungle-king-capture-report.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+async function replayLastCapture(){if(!lastCapture||busy||battle||capture.active)return;const before=R.key(state),ply=state.ply;busy=true;updateHUD();try{await playBattle(lastCapture.attacker,lastCapture.defender,true);}finally{busy=false;updateHUD();}if(R.key(state)!==before||state.ply!==ply)throw Error('Replay must never change the board');}
+
 try{renderer=new Beast3D.Renderer($('scene'),R);}catch(e){$('fatalText').textContent=String(e.message||e);$('fatal').classList.remove('hidden');return;}
 $('scene').addEventListener('webglcontextlost',e=>{e.preventDefault();$('fatalText').textContent='圖形處理器的連線中斷。棋局已自動儲存；重新載入本檔即可繼續。';$('fatal').classList.remove('hidden');});
 function updateSettings(){
- $('difficulty').value=settings.difficulty;$('cinematic').checked=settings.cinematic;$('reduced').checked=settings.reduced;document.body.classList.toggle('reduced',settings.reduced);
+ $('real3d').checked=settings.real3d;capture.updateSound(settings.sound);$('difficulty').value=settings.difficulty;$('cinematic').checked=settings.cinematic;$('reduced').checked=settings.reduced;document.body.classList.toggle('reduced',settings.reduced);
  $('soundBtn').setAttribute('aria-pressed',String(settings.sound));$('soundBtn').innerHTML=`音效 <b>${settings.sound?'開':'關'}</b>`;
  $('musicBtn').setAttribute('aria-pressed',String(settings.music));$('musicBtn').innerHTML=`音樂 <b>${settings.music?'開':'關'}</b>`;$('audioMusicToggle').textContent=settings.music?'暫停配樂':'播放配樂';
  sound.configure(settings);
@@ -40,7 +54,7 @@ function updateSettings(){
 }
 function toast(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2900);}
 function floatMessage(text,duration=1200){$('floatingMessage').textContent=text;$('floatingMessage').classList.add('show');clearTimeout(messageTimer);messageTimer=setTimeout(()=>$('floatingMessage').classList.remove('show'),duration);}
-function save(){if(!started||training||scenarioReturn||motion||battle)return;store('beast-ink.save.v2',{version:1,state,logs:logs.slice(-120),snapshots:snapshots.slice(-32),last});}
+function save(){if(!started||training||scenarioReturn||motion||battle||capture.active||pendingMove)return;store('beast-ink.save.v2',{version:1,state,logs:logs.slice(-120),snapshots:snapshots.slice(-32),last});}
 function count(side){return state.board.filter(p=>p*side>0).length;}
 function roster(side){return [8,7,6,5,4,3,2,1].map(r=>`<span class="${state.board.includes(side*r)?'':'lost'}">${R.NAMES[r]}</span>`).join('');}
 function updateCard(p=selected!==null?state.board[selected]:7,inspect=false){
@@ -55,18 +69,21 @@ function renderLogs(){
 }
 function updateHUD(){
  const turn=$('turnIndicator');turn.classList.toggle('enemy-turn',state.turn<0);
- turn.querySelector('span').textContent=!started?'靜候開局':training?training.complete?'訓練完成':'戰術訓練':state.result?'本局結束':battle?'戰鬥演出':state.turn<0?'敵方 AI 思考中':'你的回合 · 藍方';
+ turn.querySelector('span').textContent=!started?'靜候開局':training?training.complete?'訓練完成':'戰術訓練':state.result?'本局結束':(battle||capture.active)?'戰鬥演出':state.turn<0?'敵方 AI 思考中':'你的回合 · 藍方';
  $('roundLabel').textContent=`回合 ${String(Math.floor(state.ply/2)+1).padStart(2,'0')}`;
  $('enemyRoster').innerHTML=roster(-1);$('playerRoster').innerHTML=roster(1);$('enemyCount').textContent=`0${count(-1)} / 08`;$('playerCount').textContent=`0${count(1)} / 08`;
  $('hintBtn').disabled=!started||busy||!!state.result||state.turn!==1||training?.complete;
- $('undoBtn').disabled=!started||!snapshots.length||!!battle||!!motion||!!training;
- $('demoBtn').disabled=busy||!!battle||!!training;$('trainingBtn').disabled=busy||!!battle||!!training;
+ $('undoBtn').disabled=!started||!snapshots.length||!!battle||capture.active||!!motion||!!training;
+ $('demoBtn').disabled=busy||!!battle||capture.active||!!training;$('trainingBtn').disabled=busy||!!battle||capture.active||!!training;
  $('newBtn').disabled=!!battle||!!motion||!!training;$('scenarioBtn').disabled=busy||!!training||!!scenarioReturn;
  if(!state.result&&!training){
   $('tacticalStatus').querySelector('p').textContent=selected!==null?`${R.NAMES[Math.abs(state.board[selected])]}位於 ${R.coord(selected)}。${legal.length} 個合法落點${legal.some(m=>m.capture)?'，包含可擊破目標。':'。'}`:state.turn<0?'電腦正在比較走法與後續回應；你可以悔棋撤回上一手。':'獅虎跨越河流；鼠潛入水域。留意獸穴外的敵方陷阱。';
  }
  if(scenarioReturn){const elephant=scenarioKind===8;$('scenarioTitle').textContent=elephant?'巨象撼虎':'獅豹對決';$('scenarioInstruction').textContent=logs.some(e=>e.rank===scenarioKind&&Math.abs(e.capture)===(elephant?6:5))?'已破敵陣。繼續與電腦對弈，或返回原局。':elephant?'點選 D5 的藍象，再點 D6 的紅虎。':'點選 D5 的藍獅，再點 D6 的紅豹。';}
  $('elephantScenarioBtn').disabled=busy||!!training||!!scenarioReturn;
+ $('replayCapture').disabled=!lastCapture||busy||!!battle||capture.active;
+ $('captureReport').disabled=capture.active;
+ $('real3d').disabled=busy;
  renderLogs();
 }
 function select(i){
@@ -105,7 +122,7 @@ async function computerTurn(){
  const result=await getAnalysis(state,settings.difficulty);
  if(myEpoch!==epoch||key!==R.key(state))return;
  busy=false;$('aiStats').textContent=`搜尋 ${result.depth||0} 層 · ${(result.nodes||0).toLocaleString()} 節點`;
- if(result.move){await new Promise(r=>setTimeout(r,settings.reduced?40:250));if(myEpoch===epoch)doMove(result.move);}
+ if(result.move){await new Promise(r=>setTimeout(r,settings.reduced?40:250));if(myEpoch===epoch&&R.key(state)===key)doMove(result.move);}
  else {state={...state,result:{winner:1,reason:'immobile'}};updateHUD();showResult();}
 }
 async function getHint(){
@@ -120,15 +137,24 @@ function animateMove(m){
  return new Promise(resolve=>{motion={...m,start:performance.now()/1000,duration:settings.reduced?.13:m.jump?.70:m.capture?.65:.43,resolve};sound.sfx(m.jump?'jump':R.water(m.to)?'water':'move',Math.abs(state.board[m.from]));});
 }
 async function doMove(move){
- if(busy||state.result)return;
+ if(busy||pendingMove||state.result)return;
  const m=R.movesFrom(state,move.from).find(x=>x.to===move.to);if(!m)return;
- const myEpoch=epoch,p=state.board[m.from],captured=state.board[m.to];
- if(!training)snapshots.push({state,logs:logs.slice(),last});if(snapshots.length>32)snapshots.shift();
+ const myEpoch=epoch,before=state,p=state.board[m.from],captured=state.board[m.to];
+ const snapshot={state:before,logs:logs.slice(),last};
+ const ticket={epoch:myEpoch,before,move:m,committed:false};pendingMove=ticket;
  selected=null;legal=[];hint=null;busy=true;updateHUD();
- if(captured&&settings.cinematic)await playBattle(p,captured,false);
- else await animateMove(m);
- if(myEpoch!==epoch)return;
- state=R.apply(state,m);last=m;logs.push({ply:state.ply,side:Math.sign(p),rank:Math.abs(p),from:m.from,to:m.to,capture:captured,jump:m.jump});busy=false;
+ try{
+  if(captured&&settings.cinematic)await playBattle(p,captured,false);
+  else await animateMove(m);
+ }catch(e){
+  // Presentation exceptions cannot strand a legal chess move.
+  capture.cancel();if(battle)endBattle();toast('演出未能完成，棋局繼續。');
+ }
+ if(myEpoch!==epoch||pendingMove!==ticket||state!==before||ticket.committed)return;
+ ticket.committed=true;pendingMove=null;
+ if(!training){snapshots.push(snapshot);if(snapshots.length>32)snapshots.shift();}
+ state=R.apply(before,m);last=m;logs.push({ply:state.ply,side:Math.sign(p),rank:Math.abs(p),from:m.from,to:m.to,capture:captured,jump:m.jump});busy=false;
+ if(captured)lastCapture={attacker:p,defender:captured};
  if(captured&&!settings.cinematic){sound.strike(Math.abs(p),true);captureFX={i:m.to,start:performance.now()/1000};}updateCard();updateHUD();
  if(training){training.complete=true;finishTrainingStep();return;}
  save();if(state.result){showResult();return;}
@@ -151,7 +177,21 @@ function seekPainting(seconds){
  b.eventIndex=b.events.filter(e=>e.at<=b.elapsed).length;sound.setBattle(false);if(!b.paused)sound.setBattle(true,Math.abs(b.attacker));
 }
 async function playBattle(attacker,defender,demo=false){
- const requestEpoch=epoch;busy=true;await sound.unlock();if(sound.assetsPromise)await sound.assetsPromise;if(epoch!==requestEpoch)return;
+ const captureEpoch=epoch;busy=true;
+ if(CaptureContract.eligible(attacker,defender,settings)){
+  await sound.unlock();
+  // Do not let a denied audio context or decode failure block the chess action.
+  if(sound.assetsPromise)await Promise.race([sound.assetsPromise.catch(()=>{}),new Promise(r=>setTimeout(r,1800))]);
+  if(captureEpoch!==epoch)return;
+  const result=await capture.play(attacker,defender,settings,demo);
+  if(captureEpoch!==epoch||result.kind==='cancelled')return;
+  if(result.kind!=='fallback'){busy=false;updateCard();updateHUD();return;}
+  toast('即時 3D 未能完成，改用原畫演出；棋局不受影響。');busy=true;
+ }
+ return playPaintedBattle(attacker,defender,demo);
+}
+async function playPaintedBattle(attacker,defender,demo=false){
+ const requestEpoch=epoch;busy=true;await sound.unlock();if(sound.assetsPromise)await Promise.race([sound.assetsPromise.catch(()=>{}),new Promise(r=>setTimeout(r,1800))]);if(epoch!==requestEpoch)return;
  return new Promise(resolve=>{
   busy=true;const rank=Math.abs(attacker),u=UNITS[rank],now=performance.now()/1000;
   battle={attacker,defender,start:now,lastTick:now,elapsed:0,rate:1,paused:false,resolve,demo,reduced:settings.reduced,
@@ -196,8 +236,9 @@ function showResult(){
  $('tacticalStatus').querySelector('p').textContent=reasons[r.reason];
  if(!$('resultDialog').open)$('resultDialog').showModal();if(win)sound.sfx('win');save();
 }
-function resetTransient(){captureFX=null;epoch++;cancelWorker();if(motion){const m=motion;motion=null;m.resolve();}if(battle)endBattle();busy=false;selected=null;legal=[];hint=null;for(const id of ['resultDialog','confirmDialog'])if($(id).open)$(id).close();}
+function resetTransient(){captureFX=null;epoch++;pendingMove=null;capture.cancel();cancelWorker();if(motion){const m=motion;motion=null;m.resolve();}if(battle)endBattle();busy=false;selected=null;legal=[];hint=null;for(const id of ['resultDialog','confirmDialog'])if($(id).open)$(id).close();}
 function newGame(){
+ lastCapture=null;
  scenarioReturn=null;$('scenarioBanner').classList.add('hidden');
  if(innerWidth<=800)window.scrollTo(0,0);resetTransient();training=null;$('trainingBanner').classList.add('hidden');state=R.initial();logs=[];snapshots=[];last=null;started=true;$('intro').classList.add('hidden');updateCard();updateHUD();save();floatMessage('入局對弈 · 藍方先行',1400);sound.unlock();sound.sfx('select');if(settings.music)sound.setMusic(true);$('scene').focus({preventScroll:true});
 }
@@ -238,6 +279,8 @@ $('hintBtn').onclick=getHint;$('undoBtn').onclick=undo;
 $('newBtn').onclick=()=>{if(!busy)$('confirmDialog').showModal();};$('confirmNew').onclick=newGame;
 $('reviewBtn').onclick=()=>$('resultDialog').close();$('rematchBtn').onclick=newGame;
 $('helpBtn').onclick=()=>{$('helpDialog').showModal();};document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).close());
+$('replayCapture').onclick=replayLastCapture;$('captureReport').onclick=saveCaptureReport;
+$('real3d').onchange=e=>{settings.real3d=e.target.checked;updateSettings();};
 $('skipBattle').onclick=endBattle;$('pauseBattle').onclick=toggleBattlePause;$('speedBattle').onclick=changeBattleSpeed;
 $('filmSeek').oninput=e=>{if(battle?.demo){seekPainting(Number(e.target.value)/1000*battle.length);if(!battle.paused)toggleBattlePause();}};
 $('scenarioIntro').onclick=()=>startScenario(7);$('scenarioBtn').onclick=()=>startScenario(7);$('elephantIntro').onclick=()=>startScenario(8);$('elephantScenarioBtn').onclick=()=>startScenario(8);$('introElephantDemo').onclick=()=>demoBattle(true,8);$('exitScenario').onclick=exitScenario;
@@ -265,18 +308,18 @@ $('scene').addEventListener('keydown',e=>{if(battle)return;const x=kbCursor%7,y=
 document.addEventListener('keydown',e=>{if(battle&&e.key.toLowerCase()==='p'){e.preventDefault();toggleBattlePause();}else if(battle&&(e.key===' '||e.key==='Escape')){e.preventDefault();endBattle();}else if(e.key==='Escape'&&!document.querySelector('dialog[open]')){selected=null;legal=[];hint=null;updateCard();updateHUD();}});
 window.addEventListener('resize',()=>renderer.resize());new ResizeObserver(()=>renderer.resize()).observe($('arena'));
 window.addEventListener('pagehide',()=>{save();sound.visibility(true);});
-window.addEventListener('pageshow',()=>{if(!document.hidden)sound.visibility(false);});
+window.addEventListener('pageshow',()=>{if(!document.hidden)sound.visibility(capture.paused);});
 document.addEventListener('visibilitychange',()=>{
  const now=performance.now()/1000;
  if(document.hidden){save();hiddenAt=now;}else if(hiddenAt!==null){const gap=now-hiddenAt;if(battle){battle.start+=gap;battle.lastTick=now;}if(motion)motion.start+=gap;if(captureFX)captureFX.start+=gap;hiddenAt=null;}
- sound.visibility(document.hidden);
+ sound.visibility(document.hidden||capture.paused);
 });
 // One reusable DOM label per physical piece; never use animal emoji as the 3D pieces.
 const labels=new Map();for(const side of [1,-1])for(let r=1;r<=8;r++){const e=document.createElement('span');e.className='piece-label'+(side<0?' red':'');e.innerHTML=`${R.NAMES[r]}<small>${r}</small>`;$('pieceLabels').appendChild(e);labels.set(r*side,e);}
 const coordinates=[];for(let x=0;x<7;x++){const e=document.createElement('span');e.className='coord-label';e.textContent='ABCDEFG'[x];$('boardCoords').appendChild(e);coordinates.push({e,p:[x-3,.02,4.65]});}for(let y=0;y<9;y++){const e=document.createElement('span');e.className='coord-label';e.textContent=9-y;$('boardCoords').appendChild(e);coordinates.push({e,p:[-3.62,.02,y-4]});}
 let lastFrame=0,lastLabel=0;
 function tick(ms){
- requestAnimationFrame(tick);if(document.hidden||ms-lastFrame<23)return;lastFrame=ms;const time=ms/1000;
+ requestAnimationFrame(tick);if(document.hidden||capture.active||ms-lastFrame<23)return;lastFrame=ms;const time=ms/1000;
  if(motion&&time-motion.start>=motion.duration){const m=motion;motion=null;m.resolve();}
  if(battle){advanceBattleClock(time);const b=battle,t=b.elapsed,rank=Math.abs(b.attacker),f=PaintedSequence.info(b,t),age=t-f.hit;
   $('battleCutin').classList.remove('show');$('attackTitle').classList.toggle('show',!['lion-leopard','elephant-tiger'].includes(b.variant)&&t>.25);
@@ -294,9 +337,9 @@ function tick(ms){
 }
 updateSettings();updateCard();updateHUD();requestAnimationFrame(tick);
 // Read-only inspection + narrowly scoped test hooks, enabled only with #test.
-window.BeastGame={getState:()=>JSON.parse(JSON.stringify(state)),getUI:()=>({started,busy,selected,legal,hint,battle:!!battle,training:training?.lesson??null,scenario:!!scenarioReturn}),projectCell:i=>renderer.project([i%7-3,.02,(i/7|0)-4]),rules:R};
-if(location.hash==='#test')Object.assign(window.BeastGame,{setState:s=>{if(!R.validSaved(s))throw Error('Invalid test state');resetTransient();state=s;started=true;training=null;snapshots=[];logs=[];last=null;$('intro').classList.add('hidden');$('trainingBanner').classList.add('hidden');updateCard();updateHUD();},move:doMove,select,computerTurn,endBattle,settings,renderer,startTraining,exitTraining,loadTraining,sound,combat:InkCombat,
+window.BeastGame={getState:()=>JSON.parse(JSON.stringify(state)),getUI:()=>({started,busy,selected,legal,hint,battle:!!battle,real3d:capture.active,pending:!!pendingMove,training:training?.lesson??null,scenario:!!scenarioReturn}),captureReport:()=>capture.report(),projectCell:i=>renderer.project([i%7-3,.02,(i/7|0)-4]),rules:R};
+if(location.hash==='#test')Object.assign(window.BeastGame,{capture,replayLastCapture,newGame,undo,saveCaptureReport,setState:s=>{if(!R.validSaved(s))throw Error('Invalid test state');resetTransient();state=s;started=true;training=null;snapshots=[];logs=[];last=null;$('intro').classList.add('hidden');$('trainingBanner').classList.add('hidden');updateCard();updateHUD();},move:doMove,select,computerTurn,endBattle,settings,renderer,startTraining,exitTraining,loadTraining,sound,combat:InkCombat,
  getBattle:()=>battle?{rank:Math.abs(battle.attacker),defender:Math.abs(battle.defender),t:battle.elapsed,length:battle.length,eventIndex:battle.eventIndex,variant:battle.variant,paused:battle.paused,rate:battle.rate,frame:PaintedSequence.info(battle,battle.elapsed).index}:null,
  seekBattle:seekPainting,startScenario,exitScenario,playBattle,painted:PaintedSequence,
- testVisibility:hidden=>sound.visibility(hidden)});
+ testVisibility:hidden=>{capture.visibility(hidden);sound.visibility(hidden||capture.paused);}});
 })();

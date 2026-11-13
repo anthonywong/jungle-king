@@ -1,0 +1,101 @@
+{
+  "checkpoint": "3d-elephant-preview",
+  "parent": "2d-baseline",
+  "source_description": "Playable 3D capture integration source snapshot",
+  "source_archive_sha256": "1f69089dfc9bf87922eaff70e2a92e68e389354c1cbc9e9ec5bc17cf65299e9b",
+  "scope": "Source import and English identifier updates, no changes to accepted attacks, rule/AI logic, media or imported model bytes",
+  "renamed_files": [
+    {
+      "file": "SCENE-CREDITS.txt",
+      "before_sha256": "3333d576559d3854c60fa78124985a60d6936adc104065c1086055a868b235ca",
+      "after_sha256": "140b85422c038d80337fe8ac62948d99bf9fa7b7c05f81c0b34f39b61012a348",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "game/src/app.js",
+      "before_sha256": "57038e8af9376251c2ebd48c76a07db3abfad86e17ffc164d07a4a7c0d86025e",
+      "after_sha256": "c2dce3e063eb0c475c1d2233d4d71ee2867c0205ed25e1818aef861aa8f7ec27",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "game/src/assets.js",
+      "before_sha256": "1ffec3a6b0e51132bfb192ef8969825d5314bfead5bc0c2f4cfef6fe9e72a3f0",
+      "after_sha256": "d941eef9f7f370e0f379188f64fe9f41043675ee9e941addf9120a251559c3b1",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "game/src/capture-contract.js",
+      "before_sha256": "4ab3b81cfb08e833c244803b69865dd6af12aaf501705e573e20843adbdb3431",
+      "after_sha256": "6edd2117bd6134fb9d7f113c130c3310f2aabf74e5323845acbfb4abfe3cb944",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "game/src/renderer.js",
+      "before_sha256": "c7aa7d1bad7aa61ba78d6a59480be6e6813a55637126de5ab38a0f858c95044a",
+      "after_sha256": "7a067a42952e72686dbe99077508fbae162f31daf83dc73204d477d26f116c67",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "runtime-check.html",
+      "before_sha256": "606a278151f35b1962bbb909ea9fe11bbf5412a4979f543193ea2a0a753c1ac7",
+      "after_sha256": "7ecf49f1c6d46eaa6891db60831df793f5f1dc83ea799a04e265ac141ad75eee",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "scene/src/app.mjs",
+      "before_sha256": "548b92cc502a922cbe45fa97f9aef11bfdd0a7e302e74d1d7ac9b5f8da1bdf9d",
+      "after_sha256": "bfebe344d7a7305281aa4eacd5d6499b850805de97cc1241a4bfc51ef7b6dd30",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "scene/src/embedded-bridge.mjs",
+      "before_sha256": "dfe2084417dd1a2daa11e4504f9ba3412a384acb691e1d90b6436ef2990ff207",
+      "after_sha256": "e526d8a0b74b67d1507f094e1ec37eea579ff05d513caf0eaa586b7d965c405c",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "scene/src/index.html",
+      "before_sha256": "7290d51482af3ef97d0e55729558dda0cf521ed3f2dd5c38d8b1d3fae2c556da",
+      "after_sha256": "7dcd5da001e96bcdc2495e3dae561894aff09206e2c6a9afbabdf813c022fdaa",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "scene/src/lookdev.mjs",
+      "before_sha256": "3386a2ace39a01ba3646a7ac7fa9f16dba81aeaf6e090a38b55d8eaf80db1788",
+      "after_sha256": "55e34f41ed012a5f5a55c72e4bc82ba17f5cd5dde3e403961a06ac58235fd636",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "tests/headless-host.cjs",
+      "before_sha256": "f2697d0761c66e7b6d5332f17519416de6ca62325790b925d2251f0b8fc84422",
+      "after_sha256": "5b8d26cb32d01905c83cf15e203e00fb4c75c8e97f1903b62894c979078f34b6",
+      "reason": "English project branding or calligraphy asset alias"
+    },
+    {
+      "file": "tests/scene-contract.test.mjs",
+      "before_sha256": "fc6c8adb9057d8495e063dce83d1566f5f331e6a2ab9e3385d3c14155d97df4e",
+      "after_sha256": "080f367466bede61f5807ea1531a2dde4e9eea35a8ca1d4e84964cc6c5f6f2a1",
+      "reason": "English project branding or calligraphy asset alias"
+    }
+  ],
+  "protected_file_rename_audit": [
+    {
+      "file": "game/src/renderer.js",
+      "before_sha256": "c7aa7d1bad7aa61ba78d6a59480be6e6813a55637126de5ab38a0f858c95044a",
+      "after_sha256": "7a067a42952e72686dbe99077508fbae162f31daf83dc73204d477d26f116c67",
+      "reason": "Only project labels / asset alias changed"
+    },
+    {
+      "file": "game/src/assets.js",
+      "before_sha256": "1ffec3a6b0e51132bfb192ef8969825d5314bfead5bc0c2f4cfef6fe9e72a3f0",
+      "after_sha256": "d941eef9f7f370e0f379188f64fe9f41043675ee9e941addf9120a251559c3b1",
+      "reason": "Only project labels / asset alias changed"
+    },
+    {
+      "file": "scene/src/lookdev.mjs",
+      "before_sha256": "3386a2ace39a01ba3646a7ac7fa9f16dba81aeaf6e090a38b55d8eaf80db1788",
+      "after_sha256": "55e34f41ed012a5f5a55c72e4bc82ba17f5cd5dde3e403961a06ac58235fd636",
+      "reason": "Only project labels / asset alias changed"
+    }
+  ]
+}
