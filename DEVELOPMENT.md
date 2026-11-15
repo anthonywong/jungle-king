@@ -16,7 +16,21 @@ game, not two unrelated rule engines. Traditional Chinese game text is retained.
 
 The 3D branch starts from the master checkpoint. These are import commits made
 now from existing source packages, not a reconstruction of the historical edits.
-No website deployment, automatic workflow or blanket project license is enabled.
+The stable game is published to GitHub Pages. No blanket project license is enabled.
+
+## GitHub Pages
+
+Live game: https://anthonywong.github.io/jungle-king/
+
+`.github/workflows/pages.yml` builds and deploys `master` after each push, or when
+manually run from the Actions tab. It runs `python3 tools/check.py` before uploading
+only the generated `dist/` distribution, including asset credits and licenses.
+Generated files remain untracked. Deployment requires the repository's Pages
+source to be set to **GitHub Actions**.
+
+The deployment job has Pages and OIDC permissions; no personal access token is
+needed. Only `master` can run this workflow, including manual runs. The experimental
+3D branch is not published by it.
 
 ## Build and run
 
@@ -93,11 +107,12 @@ are preserved; source code that only required renaming is recorded in the audit.
 No project-wide license has been chosen. Do not infer one from bundled third-party
 licenses. Preserve all asset credits when packaging or publishing.
 
-## Publish the prepared private repository
+## Historical private-repository import helper
 
-This archive is a local Git repository, not proof of a GitHub upload. No remote
-repository has been created by the preparation step. The intended destination is
-`anthonywong/jungle-king`, private, with `master` as the default branch.
+The original archive was prepared for a private `anthonywong/jungle-king`
+repository with `master` as its default branch. The repository is now public;
+the helper below remains available for the original private-import workflow and
+will refuse the current public destination. It is not the Pages deployment command.
 
 With GitHub CLI installed and authenticated as `anthonywong`:
 

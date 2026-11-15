@@ -6,6 +6,8 @@ Traditional Chinese.
 
 ## Start playing
 
+**[Play Jungle King online](https://anthonywong.github.io/jungle-king/)**
+
 Open `index.html` from the playable distribution in a browser with JavaScript
 and Canvas support, such as Chrome, Edge, Firefox or Safari. Open the file in
 the browser itself; a file or source preview may not run the game.
