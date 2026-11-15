@@ -1,4 +1,4 @@
-# Jungle King · 山河獸影
+# Jungle King · 鬥獸棋
 
 Approved painted-game baseline. This repository preserves two presentations of the same animal-chess
 game, not two unrelated rule engines. Traditional Chinese game text is retained.
