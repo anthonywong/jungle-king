@@ -114,35 +114,71 @@ class Renderer{
   if(!im?.naturalWidth)return;const k=Math.min(w/im.naturalWidth,h/im.naturalHeight),dw=im.naturalWidth*k,dh=im.naturalHeight*k;
   this.ctx.drawImage(im,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
  }
+ lionTigerFrame(index){
+  if(!Number.isInteger(index)||index<0||index>=PaintedSequence.lionTigerSources.length)return null;
+  const atlases=['lion-tiger-leap','lion-tiger-contact','lion-tiger-fall'].map(k=>this.images[k]),keys=this.images['lion-tiger-keys'];
+  if(atlases.some(a=>!a?.naturalWidth)||!keys?.naturalWidth)return null;
+  const key=PaintedSequence.lionTigerKeys[index],source=PaintedSequence.lionTigerSources[index],atlas=key===undefined?this.images['lion-tiger-'+source.shot]:keys,cell=key===undefined?source.cell:key,columns=key===undefined?4:2;
+  // Crop once per pose: no atlas neighbours can bleed into the blurred margin.
+  if(!this.lionTigerFrames)this.lionTigerFrames=[];
+  if(!this.lionTigerFrames[index]){
+   const w=atlas.naturalWidth/columns,h=atlas.naturalHeight/columns,inset=key===undefined?0:2,frame=canvas(w-2*inset,h-2*inset);
+   frame.getContext('2d').drawImage(atlas,(cell%columns)*w+inset,Math.floor(cell/columns)*h+inset,w-2*inset,h-2*inset,0,0,frame.width,frame.height);
+   // Once the lion takes its weight, hold its stance against the same rocks.
+   // The moving tiger and dust continue on their own side of the shot.
+   if(source.shot==='fall' && cell>4){
+    if(!this.landingStance){
+     const layer=canvas(w,h),ctx=layer.getContext('2d');
+     ctx.drawImage(atlas,0,h,w,h,0,0,w,h);
+     ctx.globalCompositeOperation='destination-in';
+     ctx.filter='blur(3px)';
+     ctx.beginPath();
+     const boundary=[[-.05,-.05],[.64,-.05],[.60,.49],[.59,.58],[.55,.65],[.49,.72],[.48,.82],[.56,.97],[.57,1.05],[-.05,1.05]];
+     boundary.forEach(([u,v],i)=>i?ctx.lineTo(u*w,v*h):ctx.moveTo(u*w,v*h));
+     ctx.closePath();
+     ctx.fill();
+     this.landingStance=layer;
+    }
+    frame.getContext('2d').drawImage(this.landingStance,0,0);
+   }
+   this.lionTigerFrames[index]=frame;
+  }
+  return this.lionTigerFrames[index];
+ }
  renderBattle(b,time,reduced){
   const c=this.ctx,w=this.width,h=this.height,t=b.elapsed||0,info=PaintedSequence.info(b,t);
   this.lastCombatFrame={...info,t,variant:b.variant};
   c.save();c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
-  if(b.variant==='lion-leopard'||b.variant==='elephant-tiger'){
-   const image=this.images[(b.variant==='elephant-tiger'?'elephant-film-':'painted-')+String(info.index).padStart(2,'0')];
+  const tigerFrame=b.variant==='lion-tiger'?this.lionTigerFrame(info.index):null;
+  if(b.variant==='lion-leopard'||b.variant==='elephant-tiger'||tigerFrame){
+   const image=tigerFrame||this.images[(b.variant==='elephant-tiger'?'elephant-film-':'painted-')+String(info.index).padStart(2,'0')];
+   const iw=tigerFrame?image.width:image?.naturalWidth,ih=tigerFrame?image.height:image?.naturalHeight;
    c.fillStyle='#222722';c.fillRect(0,0,w,h);
    // A muted painted margin fills nonmatching screen shapes without stretching
    // animals or cropping the calligraphy. The central frame is always contained.
-   if(image?.naturalWidth){
+   if(iw){
     c.save();c.globalAlpha=.27;c.filter='blur(20px)';c.drawImage(image,-30,-30,w+60,h+60);c.restore();
     const area={x:10,y:53,w:w-20,h:h-106};
-    const k=Math.min(area.w/image.naturalWidth,area.h/image.naturalHeight),dw=image.naturalWidth*k,dh=image.naturalHeight*k;
+    const k=Math.min(area.w/iw,area.h/ih),dw=iw*k,dh=ih*k;
     const x=(w-dw)/2,y=53+(area.h-dh)/2;
     c.save();c.shadowColor='#090d0b99';c.shadowBlur=22;c.fillStyle='#e8ddc8';c.fillRect(x-2,y-2,dw+4,dh+4);c.restore();
-    // The lion film is unchanged. Elephant contact has a short, bounded rumble.
-    const age=t-info.hit,shake=b.variant==='elephant-tiger'&&!reduced&&age>=0&&age<.24?(1-age/.24)*3.0:0;
+    // The original films retain their motion. The new collision has a brief jolt.
+    const age=t-info.hit,shake=!reduced&&age>=0?(b.variant==='elephant-tiger'&&age<.24?(1-age/.24)*3:b.variant==='lion-tiger'&&age<.18?Math.sin(Math.PI*age/.18)*(1-age/.18)*2:0):0;
     c.save();c.translate(Math.sin(age*81)*shake,Math.cos(age*73)*shake*.55);c.drawImage(image,x,y,dw,dh);c.restore();
-    if(b.variant==='elephant-tiger'&&age>=.18&&age<1.17){
+    // Leave the close-up contact unobscured; the new film's brush lands afterward.
+    const brushAge=b.variant==='lion-tiger'&&!reduced?t-PaintedSequence.lionTigerStarts[33]+.18:age;
+    if((b.variant==='elephant-tiger'||b.variant==='lion-tiger')&&brushAge>=.18&&brushAge<1.17){
      const brush=this.images['capture-brush'];if(brush?.naturalWidth){
-      const fade=Math.min(1,(age-.18)/.075,(1.17-age)/.14),size=dw*.30*(reduced?1:1+Math.max(0,.30-age)*1.2),bh=size*brush.naturalHeight/brush.naturalWidth;
-      c.save();c.globalAlpha=Math.max(0,fade);c.translate(x+dw*.78,y+dh*.36);c.rotate(-.07);
+      const lionTiger=b.variant==='lion-tiger';
+      const fade=Math.min(1,(brushAge-.18)/.075,(1.17-brushAge)/.14),size=dw*(lionTiger?.20:.30)*(reduced?1:1+Math.max(0,.30-brushAge)*1.2),bh=size*brush.naturalHeight/brush.naturalWidth;
+      c.save();c.globalAlpha=Math.max(0,fade);c.translate(x+dw*(lionTiger?.55:.78),y+dh*(lionTiger?.18:.36));c.rotate(-.07);
       const g=c.createRadialGradient(0,0,size*.10,0,0,size*.72);g.addColorStop(0,'#f8eedeee');g.addColorStop(.65,'#f8eede99');g.addColorStop(1,'#f8eede00');c.fillStyle=g;c.fillRect(-size*.8,-bh*.8,size*1.6,bh*1.6);
       c.drawImage(brush,-size/2,-bh/2,size,bh);c.restore();
      }
     }
    }
   }else{
-   this.renderComicDuel(b,t,reduced);if(b.variant==='lion-pounce')this.renderLionPounce(b,t,reduced);if(b.variant==='elephant-charge')this.renderElephantCharge(b,t,reduced);
+   this.renderComicDuel(b,t,reduced);if(b.variant==='lion-pounce'||b.variant==='lion-tiger')this.renderLionPounce(b,t,reduced);if(b.variant==='elephant-charge')this.renderElephantCharge(b,t,reduced);
   }
   c.restore();
  }
@@ -150,7 +186,7 @@ class Renderer{
   // A different opponent must never be visually replaced by the leopard.
   // Safe crops contain ONLY the lion; the correct opposing animal remains
   // in the adjacent panel. These still use genuinely different painted poses.
-  const f=PaintedSequence.info(b,t),c=this.ctx,w=this.width,h=this.height;
+  const f=b.variant==='lion-tiger'?PaintedSequence.frame(b.reduced?t:t/b.length*PaintedSequence.total,b.reduced):PaintedSequence.info(b,t),c=this.ctx,w=this.width,h=this.height;
   const rects=[[0,0,228,250],[0,0,232,250],[0,0,240,250],[0,0,254,250],[0,0,251,250],[0,0,282,151],[0,0,258,143],[0,0,245,153],[0,0,228,174],[0,0,217,169],[0,0,183,188],[0,0,183,188],[0,0,181,190],[0,0,183,214],[0,0,182,225],[0,0,182,225]];
   const im=this.images['painted-'+String(f.index).padStart(2,'0')],rect=rects[f.index];if(!im?.naturalWidth||!rect)return;
   const top=70,bottom=h-75,ph=bottom-top,split=reduced?.52:.51+Math.sin(Math.min(1,t/f.hit)*Math.PI)*.035;

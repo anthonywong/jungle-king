@@ -160,8 +160,8 @@ async function playBattle(attacker,defender,demo=false){
   updateCard(attacker,true);$('battlePortrait').innerHTML=portrait(rank,Math.sign(attacker));$('battleUnitCode').textContent=u.code;$('battleQuote').textContent=u.quote;$('attackName').textContent=u.attack+'！';
   $('impactWord').classList.remove('show');$('battleUI').classList.remove('charging');$('targetName').textContent=UNITS[Math.abs(defender)].name;
   $('battleWho').textContent=`${attacker>0?'藍方':'紅方'}・${R.NAMES[rank]}　對　${defender>0?'藍方':'紅方'}・${R.NAMES[Math.abs(defender)]}`;
-  $('filmKind').textContent=battle.variant==='elephant-tiger'?'象・逐格原畫':battle.variant==='elephant-charge'?'象・逐格分鏡':battle.variant==='lion-leopard'?'逐格原畫':battle.variant==='lion-pounce'?'獅・逐格分鏡':'漫畫分鏡';
-  $('battleUI').classList.toggle('painted-film',['lion-leopard','elephant-tiger'].includes(battle.variant));$('battleUI').classList.toggle('film-demo',demo);
+  $('filmKind').textContent=battle.variant==='elephant-tiger'?'象・逐格原畫':battle.variant==='elephant-charge'?'象・逐格分鏡':battle.variant==='lion-tiger'?'獅對虎・逐格原畫':battle.variant==='lion-leopard'?'逐格原畫':battle.variant==='lion-pounce'?'獅・逐格分鏡':'漫畫分鏡';
+  $('battleUI').classList.toggle('painted-film',['lion-leopard','elephant-tiger','lion-tiger'].includes(battle.variant));$('battleUI').classList.toggle('film-demo',demo);
   $('filmSeek').value=0;$('filmSeek').disabled=!demo;updatePlaybackControls();
   $('battleUI').classList.remove('hidden');document.body.classList.add('in-battle');if(innerWidth<=800)$('arena').scrollIntoView({block:'start',behavior:'instant'});updateHUD();
  });
@@ -171,7 +171,8 @@ function endBattle(){
 }
 async function demoBattle(fromIntro=false,chosenRank=null){
  if(busy||battle)return;sound.unlock();if(settings.music)sound.setMusic(true);const originalIntro=!$('intro').classList.contains('hidden');if(originalIntro)$('intro').classList.add('hidden');
- const rank=chosenRank||(fromIntro?7:Number($('demoAnimal').value)||7);const foe=[0,8,1,2,3,4,5,5,6][rank];await playBattle(rank,-foe,true);if(originalIntro)$('intro').classList.remove('hidden');updateHUD();
+ const matchup=chosenRank||(fromIntro?'7':$('demoAnimal').value);
+ const rank=matchup==='lion-tiger'?7:Number(matchup)||7;const foe=matchup==='lion-tiger'?6:[0,8,1,2,3,4,5,5,6][rank];await playBattle(rank,-foe,true);if(originalIntro)$('intro').classList.remove('hidden');updateHUD();
 }
 function startScenario(kind=7){
  kind=kind===8?8:7;scenarioKind=kind;
@@ -279,8 +280,8 @@ function tick(ms){
  requestAnimationFrame(tick);if(document.hidden||ms-lastFrame<23)return;lastFrame=ms;const time=ms/1000;
  if(motion&&time-motion.start>=motion.duration){const m=motion;motion=null;m.resolve();}
  if(battle){advanceBattleClock(time);const b=battle,t=b.elapsed,rank=Math.abs(b.attacker),f=PaintedSequence.info(b,t),age=t-f.hit;
-  $('battleCutin').classList.remove('show');$('attackTitle').classList.toggle('show',!['lion-leopard','elephant-tiger'].includes(b.variant)&&t>.25);
-  $('impactWord').classList.toggle('show',!['lion-leopard','elephant-tiger'].includes(b.variant)&&age>=.025&&age<(b.reduced?.70:1.25));
+  $('battleCutin').classList.remove('show');$('attackTitle').classList.toggle('show',!['lion-leopard','elephant-tiger','lion-tiger'].includes(b.variant)&&t>.25);
+  $('impactWord').classList.toggle('show',!['lion-leopard','elephant-tiger','lion-tiger'].includes(b.variant)&&age>=.025&&age<(b.reduced?.70:1.25));
   $('battleUI').classList.remove('charging');$('impactFlash').style.opacity='0';
   while(!b.paused&&b.eventIndex<b.events.length&&t>=b.events[b.eventIndex].at){const e=b.events[b.eventIndex++];if(e.name==='impact')sound.strike(rank,true);else sound.sfx(e.name,rank);}
   $('combatTime').textContent=(b.paused?'暫停 · ':'')+f.phase;

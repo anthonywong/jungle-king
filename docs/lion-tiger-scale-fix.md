@@ -1,0 +1,21 @@
+# Lion/tiger scale continuity repair
+
+2026-11-19. Preserve the approved action and timing. The old film interleaved drawings with different camera framing. A camera-only crop also removed the tiger's face during knockback, so the landing atlas is revised instead. The repaired landing shot uses its own consistent first and final poses rather than splicing in the differently framed storyboard panels.
+
+Built-in image generation, reference-image edit. Source target: `game/assets/lion-tiger-fall-v3.webp`. Scale/design reference: `docs/artwork/lion-tiger-action-study-v3.png`.
+
+Saved runtime asset: `game/assets/lion-tiger-fall-v4.webp`, 1536 × 1024, WebP quality 94. Generated source: `exec-64fe7f76-eb32-48e4-8ced-a5da1f315404.png`. Original assets remain on disk. Only the landing asset mapping and the two landing storyboard overrides change; frame count, action order, durations and audio cue times remain unchanged.
+
+Verification includes normal/skip/reduced playback, all original films, preserved leap/contact keyframes, and a pixel-based scale/vertical-position check across the six settled poses. Visual review also checks that the tiger's head remains visible during knockback. The pixel check uses the lion's warm fur in the left side of each frame; it is a regression measurement, not a claim of skeletal tracking.
+
+## Exact prompt
+
+Edit target: FIRST attached image is the 4-column x 4-row lion-versus-tiger landing animation atlas. SECOND attached image is the approved four-keyframe action storyboard, specifically its BOTTOM LEFT and BOTTOM RIGHT panels are scale/design references. This is a targeted CHARACTER-SCALE CONTINUITY REPAIR, not a new action sequence.
+
+Output exactly the same 4x4 atlas, 16 equal landscape cells, 1536x1024, no borders, gutters, text or numbers. Preserve the exact action/pose in each corresponding cell: first lion follows through while tiger is knocked sideways; lion front paws land; tiger lands on flank; lion back paws land; last lion braced forward while injured tiger lies on side. Keep all16 positions and progression recognizable, with exactly four anatomically correct legs per animal. Keep the tiger's three dark crimson shoulder scratches, injuries, expressions and sideways resting pose. Keep the same mountain ink-watercolor art, fierce lion identity and dynamic mane.
+
+THE ONLY REQUIRED CHANGE: the lion's physical size and head-to-body proportions must stay CONSISTENT throughout this shot and agree with the large muscular lion in the approved bottom-left/bottom-right reference. Currently the generated lion shrinks into a smaller animal after the pounce. Correct that. Make the lion about 18% larger/longer and heavier through the late landing frames, while matching that SAME anatomical size in the early follow-through frames. Do NOT merely enlarge the head or mane: consistent substantial torso, shoulder mass, leg length, skull and paws. The tiger should remain a little smaller than the lion's body mass, with the same relative sizes in all16 cells.
+
+Lock camera distance and lens for all16 cells. No zooming out, no receding lion, no camera push/pull, no sudden position changes. The lion advances and lands on the same near ground plane. Its apparent size may change only as its pose compresses, not by shrinking its bones or head. In the landed frames its mane-to-front-paw height should occupy about 78-82% of the cell height, rather than the undersized 60% in the target. The lion stays LEFT, tiger stays RIGHT. Both heads and all contact/landing actions must stay inside every frame; do NOT solve scale by cropping away the tiger's head. Recompose the small empty space between animals if needed, retaining the approved movement. Some trailing lion tail or far tiger hindquarters may be at the edge like the approved reference, but do not crop main bodies or paws. Keep rocky grounding, coherent shadows, no floating. Final poses keep lion planted low and powerful with weight forward, injured tiger on its flank at right. Not a proud upright lion portrait, not a belly-down sleeping tiger.
+
+The first and final cells must connect to the approved bottom-left and bottom-right action poses smoothly. Across all16 cells, a viewer should perceive one animal of one fixed size, not a lion that changes size after impact.

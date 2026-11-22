@@ -5,6 +5,13 @@ Lion sequence and brush-written 破: artwork generated and approved earlier in
 this conversation; retained without redrawing the glyph or replacing the lion.
 Elephant sequence: generated for this update, curated into thirteen usable
 poses. Earlier source poses with inaccurate open-mouth anatomy were rejected.
+Lion-versus-tiger sequence: 44 displayed poses based on the four action
+keyframes approved by the user. Generated with OpenAI image generation on
+2026-11-18. Three 4-by-4 atlases supply connecting poses. Approved leap and impact
+keyframes are retained losslessly. The landing atlas was corrected on
+2026-11-19 to keep the lion at a consistent size, without changing action
+or timing; see docs/lion-tiger-scale-fix.md. Original lion/leopard and elephant/tiger films remain unchanged.
+Full animation prompts and provenance: docs/lion-tiger-film-v3.md.
 The other painted animals and mountain/interface assets come from the previous
 game. The game uses no official Bandai characters, music, logos or game assets.
 No affiliation or endorsement by a publisher or artist is claimed.

@@ -107,6 +107,20 @@ are preserved; source code that only required renaming is recorded in the audit.
 No project-wide license has been chosen. Do not infer one from bundled third-party
 licenses. Preserve all asset credits when packaging or publishing.
 
+### Painted cutscene filenames
+
+Use `<attacker>-vs-<defender>-<asset-type>-<id>.webp` for painted cutscene
+artwork in `game/assets/`. Name the attacking animal first. Use lowercase words
+and separate them with hyphens.
+
+- For an individual drawing, use `frame` and its zero-based playback index,
+  padded to at least two digits, as in `elephant-vs-tiger-frame-00.webp`
+  and `lion-vs-leopard-frame-00.webp`.
+- For a sprite sheet, use `sheet` and a stable name for its contents, as in
+  `lion-vs-tiger-sheet-leap.webp`, `lion-vs-tiger-sheet-contact.webp`,
+  `lion-vs-tiger-sheet-fall.webp`, or `lion-vs-tiger-sheet-key-poses.webp`.
+  Keep that name when revising the artwork. Git records its revision history.
+
 ## Historical private-repository import helper
 
 The original archive was prepared for a private `anthonywong/jungle-king`
