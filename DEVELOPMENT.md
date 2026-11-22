@@ -110,7 +110,10 @@ licenses. Preserve all asset credits when packaging or publishing.
 ### Painted cutscene filenames
 
 Use `<attacker>-vs-<defender>-<asset-type>-<id>.webp` for painted cutscene
-artwork in `game/assets/`. Name the attacking animal first. Use lowercase words
+artwork in `game/assets/<attacker>-vs-<defender>/`. Each matchup has its own
+directory. For example, the lion’s leap against the tiger lives at
+`game/assets/lion-vs-tiger/lion-vs-tiger-sheet-leap.webp`.
+Name the attacking animal first. Use lowercase words
 and separate them with hyphens.
 
 - For an individual drawing, use `frame` and its zero-based playback index,

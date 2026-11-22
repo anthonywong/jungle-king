@@ -2,9 +2,9 @@
 
 2026-11-19. Preserve the approved action and timing. The old film interleaved drawings with different camera framing. A camera-only crop also removed the tiger's face during knockback, so the landing atlas is revised instead. The repaired landing shot uses its own consistent first and final poses rather than splicing in the differently framed storyboard panels.
 
-Built-in image generation, reference-image edit. Source target: `game/assets/lion-tiger-fall-v3.webp`. Scale/design reference: `docs/artwork/lion-tiger-action-study-v3.png`.
+Built-in image generation, reference-image edit. Source target: `game/assets/lion-vs-tiger/drafts/lion-tiger-fall-v3.webp`. Scale/design reference: `docs/artwork/lion-tiger-action-study-v3.png`.
 
-Saved runtime asset: `game/assets/lion-tiger-fall-v4.webp`, 1536 × 1024, WebP quality 94. Generated source: `exec-64fe7f76-eb32-48e4-8ced-a5da1f315404.png`. Original assets remain on disk. Only the landing asset mapping and the two landing storyboard overrides change; frame count, action order, durations and audio cue times remain unchanged.
+Saved runtime asset: `game/assets/lion-vs-tiger/drafts/lion-tiger-fall-v4.webp`, 1536 × 1024, WebP quality 94. Generated source: `exec-64fe7f76-eb32-48e4-8ced-a5da1f315404.png`. Original assets remain on disk. Only the landing asset mapping and the two landing storyboard overrides change; frame count, action order, durations and audio cue times remain unchanged.
 
 Verification includes normal/skip/reduced playback, all original films, preserved leap/contact keyframes, and a pixel-based scale/vertical-position check across the six settled poses. Visual review also checks that the tiger's head remains visible during knockback. The pixel check uses the lion's warm fur in the left side of each frame; it is a regression measurement, not a claim of skeletal tracking.
 

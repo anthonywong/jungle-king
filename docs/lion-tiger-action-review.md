@@ -19,7 +19,7 @@ The original lion/leopard and elephant/tiger films remain unchanged. This is a r
 
 ## Generation
 
-Built-in image generation, using `game/assets/lion-vs-leopard-frame-04.webp` and `game/assets/lion-vs-leopard-frame-07.webp` as style/action references.
+Built-in image generation, using `game/assets/lion-vs-leopard/lion-vs-leopard-frame-04.webp` and `game/assets/lion-vs-leopard/lion-vs-leopard-frame-07.webp` as style/action references.
 
 Review image: `docs/artwork/lion-tiger-action-study-v3.png`.
 

@@ -5,14 +5,14 @@ import base64,json
 ROOT=Path(__file__).resolve().parents[1]
 ASSET_FILES={k:k+'.webp' for k in ['rat','cat','dog','wolf','leopard','tiger','elephant','earth','water','painted-lion-portrait','painted-leopard-portrait','capture-brush','painted-mountains']}
 ASSET_FILES.update({'lion':'lion-board-painted.webp','lion-face':'painted-lion-card.webp'})
-ASSET_FILES.update({f'painted-{i:02}':f'lion-vs-leopard-frame-{i:02}.webp' for i in range(16)})
-ASSET_FILES.update({f'elephant-film-{i:02}':f'elephant-vs-tiger-frame-{i:02}.webp' for i in range(13)})
+ASSET_FILES.update({f'painted-{i:02}':f'lion-vs-leopard/lion-vs-leopard-frame-{i:02}.webp' for i in range(16)})
+ASSET_FILES.update({f'elephant-film-{i:02}':f'elephant-vs-tiger/elephant-vs-tiger-frame-{i:02}.webp' for i in range(13)})
 ASSET_FILES['painted-elephant-portrait']='painted-elephant-portrait.webp'
 ASSET_FILES.update({
-    'lion-tiger-leap': 'lion-vs-tiger-sheet-leap.webp',
-    'lion-tiger-contact': 'lion-vs-tiger-sheet-contact.webp',
-    'lion-tiger-fall': 'lion-vs-tiger-sheet-fall.webp',
-    'lion-tiger-keys': 'lion-vs-tiger-sheet-key-poses.webp',
+    'lion-tiger-leap': 'lion-vs-tiger/lion-vs-tiger-sheet-leap.webp',
+    'lion-tiger-contact': 'lion-vs-tiger/lion-vs-tiger-sheet-contact.webp',
+    'lion-tiger-fall': 'lion-vs-tiger/lion-vs-tiger-sheet-fall.webp',
+    'lion-tiger-keys': 'lion-vs-tiger/lion-vs-tiger-sheet-key-poses.webp',
 })
 if __name__=='__main__':
     assets={k:'data:image/webp;base64,'+base64.b64encode((ROOT/'assets'/file).read_bytes()).decode('ascii') for k,file in ASSET_FILES.items()}

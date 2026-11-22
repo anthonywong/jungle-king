@@ -6,7 +6,7 @@ User approved the four keyframes and requested the full animation. Generated wit
 
 ## Final assembly
 
-- Runtime assets: `game/assets/lion-tiger-leap-v3.webp`, `lion-vs-tiger-sheet-contact.webp`, `lion-tiger-fall-v3.webp`, and `lion-vs-tiger-sheet-key-poses.webp`.
+- Runtime assets: `game/assets/lion-vs-tiger/drafts/lion-tiger-leap-v3.webp`, `game/assets/lion-vs-tiger/lion-vs-tiger-sheet-contact.webp`, `game/assets/lion-vs-tiger/drafts/lion-tiger-fall-v3.webp`, and `game/assets/lion-vs-tiger/lion-vs-tiger-sheet-key-poses.webp`.
 - Three new atlases each contain 16 drawings at 1536 × 1024. They are encoded as WebP at quality 94. The approved storyboard is encoded losslessly; its four panels are cropped at runtime with a 2-pixel inset to exclude panel borders.
 - The displayed sequence has 44 poses: 16 leap poses, 12 contact poses, and 16 knockback/landing poses. The first four generated close-up approach cells are omitted to cut directly onto the approved impact. This also avoids showing the generated shoulder scratches before contact.
 - Approved keyframe pixels replace displayed poses 16, 17, 29 and 44 (one-based). All remaining poses come from the new atlases.

@@ -4,9 +4,9 @@ Historical version: the current approved action and production animation are doc
 
 Updated on 2026-11-18 using the built-in image generation tool in reference-image/edit mode, following the request for an injured tiger and smoother animation.
 
-- Runtime assets: [attack atlas](../game/assets/lion-tiger-attack-v2.webp) and [injury atlas](../game/assets/lion-tiger-injured-v2.webp). Each is 1536 × 1024 with a 4 × 4 grid, giving 32 distinct 384 × 256 drawings.
+- Runtime assets: [attack atlas](../game/assets/lion-vs-tiger/drafts/lion-tiger-attack-v2.webp) and [injury atlas](../game/assets/lion-vs-tiger/drafts/lion-tiger-injured-v2.webp). Each is 1536 × 1024 with a 4 × 4 grid, giving 32 distinct 384 × 256 drawings.
 - Generated source files: `exec-b0e36fad-6f82-4596-b2f7-3c84158bca8e.png` (attack) and `exec-215c5719-4300-4e44-bff4-0c31485ea80a.png` (final injury correction). Both are converted to WebP at quality 92. The intermediate injury image was `exec-68028a5c-8a63-410d-a25d-bd73e79dee1e.png`.
-- The first 16-frame atlas remains at `game/assets/lion-tiger-atlas.webp` for reference; it is no longer embedded in the playable build.
+- The first 16-frame atlas remains at `game/assets/lion-vs-tiger/drafts/lion-tiger-atlas.webp` for reference; it is no longer embedded in the playable build.
 - Action advances at 12 drawings per second, with a 0.28-second opening and 0.65-second ending hold. Total duration is 3.43 seconds. This uses additional drawn poses, not frame duplication or whole-image dissolves.
 - First contact is pose 13; landing is pose 21. Audio cues follow this independent timeline, leaving the original lion/leopard and elephant/tiger timings unchanged.
 - The tiger receives small shoulder scratches, recoils, protects its foreleg and sinks into a defeated resting pose. The injury is non-graphic and the tiger remains alive.
@@ -56,8 +56,8 @@ undefined
 
 Generated on 2026-11-18 using the built-in image generation tool, in reference-image mode. This is new artwork, not a replacement for either approved film.
 
-- References: `game/assets/lion-vs-leopard-frame-00.webp`, `lion-vs-leopard-frame-07.webp`, `lion-vs-leopard-frame-15.webp`.
-- Runtime asset: `game/assets/lion-tiger-atlas.webp`, 1536 × 1024, 4 columns × 4 rows, 16 poses read row first. Each pose is 384 × 256.
+- References: `game/assets/lion-vs-leopard/lion-vs-leopard-frame-00.webp`, `lion-vs-leopard-frame-07.webp`, `lion-vs-leopard-frame-15.webp`.
+- Runtime asset: `game/assets/lion-vs-tiger/drafts/lion-tiger-atlas.webp`, 1536 × 1024, 4 columns × 4 rows, 16 poses read row first. Each pose is 384 × 256.
 - Source generation: `exec-40ef80e0-4479-472c-89a6-8b2c74fd4ccf.png` in the session generated-image library; converted to WebP at quality 92 for offline embedding.
 - The renderer caches individual canvas crops. The shared lion timeline selects each distinct pose; first contact is pose 8. The original lion/leopard timing, frames and audio remain unchanged.
 - Only lion attacking tiger selects this film, for either army. Other opponents keep their existing matching visuals. If the atlas cannot load, the existing lion-only animation and tiger portrait provide a fallback.
